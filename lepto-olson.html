@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GusEngine — case walkthrough (febrile multisystem illness)</title>
+<meta name="description" content="A single pediatric case run through GusEngine, annotated so you can see what each output is and what it means.">
+<meta property="og:title" content="GusEngine — annotated case walkthrough">
+<meta property="og:description" content="Pediatric febrile multisystem illness, reasoned end to end. Hover any underlined label for what that output means.">
+<meta property="og:type" content="article">
+<style>
+  :root{
+    --bg:#fbfbfa; --surface:#ffffff; --ink:#1c1c1a; --muted:#5f5e5a; --faint:#8a8984;
+    --line:#e7e6e1; --line2:#d4d3cd; --accent:#185fa5; --accentbg:#e9f1fb;
+    --good:#0f6e56; --goodbg:#e4f3ee; --bad:#a32d2d; --warnink:#854f0b; --warnbg:#faeeda;
+    --radius:12px; --radius-sm:8px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px 80px}
+  header.top{border-bottom:1px solid var(--line);padding:26px 0 18px;margin-bottom:26px}
+  .brand{font-size:14px;letter-spacing:.04em;color:var(--faint);text-transform:uppercase}
+  h1{font-size:25px;font-weight:600;margin:6px 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:15px;margin:0}
+  h2{font-size:13px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin:34px 0 12px}
+  p{margin:0 0 14px}
+  .lede{font-size:17px;line-height:1.7}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin:0 0 14px}
+  .intro{background:var(--accentbg);border:1px solid #cfe0f3;border-radius:var(--radius);padding:18px 20px;margin:0 0 8px}
+  .intro p{margin:0 0 10px}
+  .maplist{list-style:none;margin:8px 0 0;padding:0}
+  .maplist li{padding:7px 0;border-top:1px solid #d5e3f3;font-size:15px;display:flex;gap:10px}
+  .maplist li:first-child{border-top:none}
+  .maplist .q{color:var(--accent);font-weight:600;min-width:0;flex:1}
+  .maplist a{color:var(--accent);text-decoration:none;white-space:nowrap;border-bottom:1px solid #b9d3ef}
+  .pill{display:inline-block;font-size:13px;color:var(--accent);background:var(--accentbg);
+    padding:3px 11px;border-radius:20px}
+  .oneliner{font-size:18px;line-height:1.6;margin:0 0 4px}
+  .fits{color:var(--good);font-weight:600}
+  .against{color:var(--bad);font-weight:600}
+  .atyp{color:var(--warnink);font-weight:600}
+  .grounded{color:var(--good);font-size:13px}
+  .cand{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin:0 0 11px}
+  .cand .h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:7px}
+  .cand .nm{font-size:16px;font-weight:600}
+  .cand .pr{font-size:15px;font-weight:600;color:var(--accent)}
+  .cand .row{font-size:14.5px;color:var(--muted);line-height:1.6;margin-top:3px}
+  .lead{border-color:#b9d3ef;background:#fcfdff}
+  .phys{font-size:14.5px;color:var(--muted);line-height:1.6;margin:0 0 11px}
+  .phys b{color:var(--ink);font-weight:600}
+  .phys .src{display:block;color:var(--faint);font-size:13px;margin-top:2px}
+  .resolve{background:#f7f7f5;border-radius:var(--radius);padding:14px 16px;font-size:15px;line-height:1.7}
+  .resolve .mv{color:var(--ink)}
+  .miss{font-size:14.5px;color:var(--bad);line-height:1.6}
+  .tip{position:relative;border-bottom:1px dotted var(--faint);cursor:help;outline:none}
+  .tip>.pop{position:absolute;top:150%;left:0;width:300px;max-width:78vw;background:var(--surface);
+    border:1px solid var(--line2);border-radius:var(--radius-sm);padding:11px 13px;font-size:13.5px;
+    line-height:1.55;color:var(--muted);z-index:30;opacity:0;visibility:hidden;
+    transition:opacity .12s ease;box-shadow:0 6px 22px rgba(20,20,18,.10)}
+  .tip:hover>.pop,.tip:focus>.pop,.tip:focus-within>.pop{opacity:1;visibility:visible}
+  .tip .mk{font-size:11px;color:var(--faint);vertical-align:1px;margin-left:2px}
+  .pop b{color:var(--ink);font-weight:600}
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);color:var(--faint);font-size:13px}
+  a.skip{color:var(--accent)}
+  @media (max-width:560px){.wrap{padding:0 16px 60px} h1{font-size:22px} .tip>.pop{width:240px}}
+  @media print{body{background:#fff} .tip>.pop{display:none} .intro{background:#f4f8fd}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">GusEngine · case walkthrough</div>
+    <h1>A 7-year-old with a febrile multisystem illness</h1>
+    <p class="sub">One case, reasoned end to end — annotated for Dr. Andrew Olson. Hover any <span class="tip" tabindex="0">underlined label<span class="pop">Like this. Each one says, in plain language, <b>what that output is</b> and <b>why it's there</b> — so the page explains itself.</span></span> for what it means.</p>
+  </header>
+
+  <div class="intro">
+    <p style="font-weight:600;color:#0c447c;margin-bottom:8px">Andrew — following up on our conversation.</p>
+    <p style="color:#163d63">You made several points about how diagnostic reasoning actually works. Rather than describe how GusEngine answers them, here's one case with your points marked in the margin. The short version of where each lands:</p>
+    <ul class="maplist">
+      <li><span class="q">Problem representation does the load-bearing work</span> <a href="#rep">the one-liner →</a></li>
+      <li><span class="q">The response should match the cognitive mode</span> <a href="#mode">the reasoning mode →</a></li>
+      <li><span class="q">Atypicality is the gold, never discounted</span> <a href="#dd">the ◆ markers →</a></li>
+      <li><span class="q">Pattern recognition isn't citable; justification is</span> <a href="#dd">the ✓ sources →</a></li>
+      <li><span class="q">Don't-miss is orthogonal to most-likely</span> <a href="#miss">cannot-miss →</a></li>
+      <li><span class="q">It shouldn't tell you "it's this"</span> <a href="#dd">no verdict, a ranked read →</a></li>
+    </ul>
+  </div>
+
+  <h2>The presentation</h2>
+  <p class="lede">A previously well 7-year-old boy from a rural area, referred to PICU with 2 days of fever, headache and vomiting, then myalgia and a generalized rash. Referring diagnosis: staphylococcal toxic shock syndrome, on vancomycin. On exam: hypotension, tachycardia, GCS 11, bilateral conjunctival suffusion, calf-muscle tenderness, hepatosplenomegaly, diffuse erythema with intraoral bleeding. Labs show profound hypoglycemia, metabolic acidosis, hyponatremia, hypoalbuminemia, a coagulopathy (PT 30s, D-dimer 7699) — and, notably, <em>normal</em> platelets and <em>normal</em> creatinine.</p>
+
+  <h2 id="rep">Problem representation</h2>
+  <p style="color:var(--muted);font-size:14px;margin-bottom:6px"><span class="tip" tabindex="0">What this is<span class="mk">ⓘ</span><span class="pop">GusEngine's one-line <b>problem representation</b> — the same abstraction a clinician forms before naming a diagnosis. Everything downstream reasons from this framing, not from the raw fact list.</span></span></p>
+  <p class="oneliner">A young child from a rural area with an acute, severe febrile multisystem illness — conjunctival suffusion, calf tenderness, diffuse erythema with intraoral bleeding, and hepatosplenomegaly — accompanied by profound hypoglycemia, hyponatremia, hypoalbuminemia, and coagulopathy.</p>
+
+  <h2 id="mode">Reasoning mode</h2>
+  <p style="margin-bottom:4px"><span class="tip pill" tabindex="0" style="border-bottom:none">etiologic discrimination<span class="pop">The <b>kind of reasoning</b> the case calls for — recognizing the syndrome, finding its cause, or confirming a known one. Here the syndrome is clear; the work is <b>which cause</b>, so the output focuses on discriminators rather than re-naming the picture. The register matches the mode.</span></span></p>
+
+  <h2>Physiologic reading — what the findings mean</h2>
+  <p style="color:var(--muted);font-size:14px;margin-bottom:8px"><span class="tip" tabindex="0">What this is<span class="mk">ⓘ</span><span class="pop">Before ranking any diagnosis, GusEngine reads what the findings <b>mean together</b> physiologically — the shared substrate each candidate then has to explain. Diagnosis-independent.</span></span></p>
+  <p class="phys"><b>Systemic hypoperfusion and microvascular failure</b> → anaerobic metabolism and a severe metabolic acidosis.<span class="src">HCO₃ 10 · lactate 2.4 · capillary refill 3s</span></p>
+  <p class="phys"><b>Active skeletal-muscle injury (myositis)</b> → leak of intracellular muscle enzymes.<span class="src">myalgia · calf tenderness · CK 519</span></p>
+  <p class="phys"><b>A consumptive coagulopathy / DIC</b> → clotting-factor depletion with clinical bleeding.<span class="src">intraoral bleeding · PT 30.2s · D-dimer 7699</span></p>
+  <p class="phys"><b>Hepatic congestion with capillary leak</b> → impaired biliary excretion and low oncotic pressure.<span class="src">total bilirubin 3.0 · albumin 1.9 · hepatomegaly</span></p>
+
+  <h2 id="dd">Defended differential</h2>
+  <p style="color:var(--muted);font-size:14px;margin-bottom:10px"><span class="tip" tabindex="0">What this is<span class="mk">ⓘ</span><span class="pop">A <b>ranked differential, not a verdict.</b> For each candidate: what fits, what argues against, the atypical high-information findings, and the test that would settle it. The percentages are GusEngine's read of relative likelihood — the call is yours.</span></span></p>
+
+  <div class="cand lead">
+    <div class="h"><span class="nm">Leptospirosis (Weil's disease)</span>
+      <span class="tip pr" tabindex="0" style="border-bottom:none">leading<span class="pop">Relative likelihood across the differential — a <b>calibrated read</b>, not a commitment. "What would move this" is answered by the discriminating test below.</span></span>
+      <span class="tip grounded" tabindex="0" style="border-bottom:none">✓ grounded<span class="pop">Where a claim is drawn from the literature it carries a <b>source you can open</b>. Pattern-recognition claims don't — GusEngine is honest about what is and isn't citable, exactly your point.</span></span>
+    </div>
+    <div class="row"><span class="tip fits" tabindex="0">▲ fits<span class="pop">The findings this diagnosis explains in the expected, typical way — the supporting evidence.</span></span> &nbsp;rural exposure · bilateral conjunctival suffusion · calf-muscle tenderness · hepatosplenomegaly · hepatic dysfunction · coagulopathy</div>
+    <div class="row"><span class="tip against" tabindex="0">▼ argues against<span class="pop">Findings present that don't fit, or features the diagnosis <b>should</b> produce but that are absent — the evidence that lowers it.</span></span> &nbsp;platelet count and creatinine are normal (severe leptospirosis usually brings thrombocytopenia and renal injury)</div>
+  </div>
+
+  <div class="cand">
+    <div class="h"><span class="nm">Scrub typhus</span><span class="pr">strong</span></div>
+    <div class="row"><span class="fits">▲ fits</span> &nbsp;rural exposure · fever · rash · hepatosplenomegaly · transaminitis</div>
+    <div class="row"><span class="tip atyp" tabindex="0">◆ atypical (high-information)<span class="pop">Present-but-unusual — or expected-but-absent — features for this diagnosis. These are <b>diagnostic gold</b>: the findings that separate an expert read from pattern-matching, and GusEngine never discounts them.</span></span> &nbsp;no eschar on full skin survey (the classic finding — absent here, which lowers but does not exclude it)</div>
+  </div>
+
+  <div class="cand">
+    <div class="h"><span class="nm">Rickettsial infection (RMSF / spotted-fever group)</span><span class="pr">considered</span></div>
+    <div class="row"><span class="fits">▲ fits</span> &nbsp;rural exposure · fever · rash · hyponatremia · explains the coagulopathy and hypoglycemia via endothelial injury</div>
+  </div>
+
+  <div class="cand">
+    <div class="h"><span class="nm">Severe malaria</span><span class="pr">considered</span></div>
+    <div class="row"><span class="fits">▲ fits</span> &nbsp;fever · hepatosplenomegaly · profound hypoglycemia · metabolic acidosis</div>
+    <div class="row"><span class="atyp">◆ atypical</span> &nbsp;prominent rash and conjunctival suffusion are unusual for malaria</div>
+  </div>
+
+  <div class="cand">
+    <div class="h"><span class="nm">Toxic shock syndrome <span style="font-weight:400;color:var(--faint);font-size:13px">— the referring diagnosis</span></span><span class="pr">argued against</span></div>
+    <div class="row"><span class="against">▼ argues against</span> &nbsp;a normal platelet count (192,000) is incompatible with the CDC criterion (≤100,000); a normal creatinine (0.9) is incompatible with the renal-involvement criterion. No bacterial focus identified.</div>
+    <div class="row" style="color:var(--faint);font-size:13.5px">GusEngine engages the working diagnosis on its own published criteria rather than ignoring it.</div>
+  </div>
+
+  <h2>What confirms or changes the answer</h2>
+  <p style="color:var(--muted);font-size:14px;margin-bottom:8px"><span class="tip" tabindex="0">What this is<span class="mk">ⓘ</span><span class="pop">The highest-yield next tests and what each would <b>rule in or out</b> — the missing information that would move the probabilities. Decision support, not a decision.</span></span></p>
+  <div class="resolve">
+    <div class="mv">→ <b>Leptospira PCR</b> (whole blood, useful in the first week) — confirms or lowers leptospirosis</div>
+    <div class="mv" style="margin-top:6px">→ <b>Scrub typhus IgM ELISA</b> — confirms or lowers scrub typhus</div>
+    <div style="color:var(--faint);font-size:13.5px;margin-top:8px">Empiric doxycycline plus penicillin/ceftriaxone covers the treatable zoonoses while serology returns.</div>
+  </div>
+
+  <h2 id="miss">Cannot-miss</h2>
+  <p style="color:var(--muted);font-size:14px;margin-bottom:6px"><span class="tip" tabindex="0">What this is<span class="mk">ⓘ</span><span class="pop">Dangerous diagnoses worth <b>actively excluding regardless of where they rank</b> — surfaced separately so that probability never buries safety. Orthogonal to "most likely".</span></span></p>
+  <p class="miss">Leptospirosis (Weil's disease) · toxic shock syndrome · hemophagocytic lymphohistiocytosis (HLH)</p>
+
+  <footer>
+    GusEngine surfaces the reasoning and the data to decide on — it does not issue a verdict.
+    The published case resolved as severe leptospirosis (Weil's disease).
+    Prepared for discussion; not for clinical use.
+  </footer>
+
+</div>
+</body>
+</html>
