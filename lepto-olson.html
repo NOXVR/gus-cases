@@ -79,6 +79,31 @@
   .confirm .bl{font-size:12.5px;color:var(--text-secondary);margin:3px 0;line-height:1.5}
   .miss{font-size:13px;color:var(--danger);line-height:1.55;margin:9px 0 0}
   footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--border-light);color:var(--text-tertiary);font-size:12px;line-height:1.6}
+  .fa-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:13px 16px;margin:0 0 4px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .pill-ok{font-size:11px;font-weight:600;color:var(--success);background:var(--success-light);padding:3px 10px;border-radius:12px;white-space:nowrap}
+  .ns-card{background:var(--bg-secondary);border-radius:var(--radius-lg);padding:15px 16px;margin:0 0 4px}
+  .ns-intro{font-style:italic;font-size:13.5px;color:var(--text-secondary);line-height:1.55;margin:0 0 13px}
+  .rank{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:13px 15px;margin:0 0 11px}
+  .rank .rh{font-size:var(--font-sm);margin-bottom:6px}
+  .rank .rh b{font-weight:700;color:var(--text-secondary);letter-spacing:.3px}
+  .rank .rh .disc{color:var(--text-muted)}
+  .rank .rh .e{color:var(--teal)}
+  .rank .mvt{font-size:var(--font-md);font-weight:600;color:var(--text-primary);line-height:1.4;margin:0 0 5px}
+  .rank .rat{font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0 0 9px}
+  .gbox{background:var(--bg-secondary);border-left:3px solid var(--success);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:9px 12px;margin:0 0 11px}
+  .gbox .gt{font-size:12.5px;color:var(--text-secondary);margin:0 0 3px}
+  .gbox .ck{color:var(--success);font-weight:600}
+  .gbox .gm{font-size:12.5px;color:var(--text-primary);margin:0 0 3px}
+  .gbox .gq{font-size:12px;font-style:italic;color:var(--text-muted);margin:0;line-height:1.5}
+  .ifgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ifcol{border:1px solid var(--border-light);border-radius:var(--radius-md);padding:10px 12px}
+  .ifcol .ifh{font-size:var(--font-xs);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--success);margin:0 0 6px}
+  .ifcol .f1{font-size:12.5px;color:var(--text-primary);margin:0 0 5px;line-height:1.45}
+  .ifcol .f2{font-size:12.5px;font-style:italic;color:var(--text-secondary);margin:0 0 5px;line-height:1.45}
+  .ifcol .f3{font-size:12.5px;font-weight:600;color:var(--text-primary);margin:0;line-height:1.45}
+  .dndy{font-size:12.5px;color:var(--text-secondary);margin:11px 0 0;line-height:1.5}
+  .dndy b{color:var(--text-primary);font-weight:600}
+  .safety{font-size:12.5px;color:var(--danger);background:#fdf1f1;border:1px solid #f3d4d4;border-radius:var(--radius-md);padding:9px 12px;margin:10px 0 0;line-height:1.5}
   .tip{position:relative;border-bottom:1px dotted var(--text-tertiary);cursor:help;outline:none}
   .tip>.pop{position:absolute;top:155%;left:0;width:300px;max-width:80vw;background:var(--surface);
     border:1px solid var(--border);border-radius:var(--radius-md);padding:11px 13px;font-size:12.5px;
@@ -87,7 +112,7 @@
   .tip:hover>.pop,.tip:focus>.pop,.tip:focus-within>.pop{opacity:1;visibility:visible}
   .tip .mk{font-size:10px;color:var(--text-tertiary);vertical-align:1px;margin-left:2px}
   .pop b{color:var(--text-primary);font-weight:600}
-  @media (max-width:560px){.wrap{padding:18px 14px 50px}.tip>.pop{width:230px}}
+  @media (max-width:560px){.wrap{padding:18px 14px 50px}.tip>.pop{width:230px}.ifgrid{grid-template-columns:1fr}}
   @media print{body,.wrap{background:#fff}.tip>.pop{display:none}}
 </style>
 </head>
@@ -136,6 +161,48 @@
   </div>
 
   <div class="sev"><span class="tip" tabindex="0" style="color:var(--warning)">Severity: critical<span class="pop">A safety read of how sick the patient is, kept separate from the differential — so acuity is never conflated with which diagnosis is most likely.</span></span></div>
+
+  <div class="seclabel">Frame adequacy — orphan check</div>
+  <div class="fa-card">
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.5"><span class="tip" tabindex="0">Orphan check<span class="pop">A check that <b>no important finding is left unexplained</b> by the differential. If a high-reliability fact were orphaned — explained by none of the candidates — it would flag a likely missing diagnosis. None here.</span></span>: orphan load <b style="color:var(--success)">none</b> — no high-reliability fact is left unexplained by the current candidates.</div>
+    <span class="pill-ok">frame adequate</span>
+  </div>
+
+  <div class="seclabel">Next step</div>
+  <div class="ns-card">
+    <p class="ns-intro"><span class="tip" tabindex="0" style="font-style:normal">The decision tree<span class="pop">The single highest-yield move, what each result would mean, and what to do then — the "what would change the probability" made explicit, plus the test that's deliberately deferred and the safety floor.</span></span> — a severe, acute febrile illness with multi-organ involvement (hepatic, renal, hematologic) and the highly specific finding of conjunctival suffusion, which strongly points toward leptospirosis. This is a confirm-and-treat phase.</p>
+
+    <div class="rank">
+      <div class="rh"><b>Rank 1</b> &nbsp;<span class="disc"><span class="tip" tabindex="0">discriminates<span class="pop">The candidates this one move would help separate — the move is chosen because it cuts across several at once, not just the leader.</span></span>: <span class="e">Leptospirosis · Rickettsial diseases · Severe malaria</span></span></div>
+      <div class="mvt">Order PCR for Leptospira (whole blood) and initiate empiric treatment with IV penicillin or ceftriaxone.</div>
+      <div class="rat">PCR on whole blood is the most useful test in the first week of illness; empiric penicillin/ceftriaxone covers the treatable spirochetal and bacterial causes while it returns — in severe suspected disease, clinical suspicion drives treatment before laboratory confirmation.</div>
+      <div class="gbox">
+        <div class="gt"><span class="tip" tabindex="0" style="border-bottom:none"><span class="ck">✓ corpus-grounded</span><span class="pop">This recommendation is drawn from the literature and carries the <b>verbatim source</b> below — your point that justification is citable even when the initial pattern-match isn't.</span></span> · Leptospirosis</div>
+        <div class="gm">PCR analysis of whole blood, collected in the first week of illness.</div>
+        <div class="gq">"During early disease, polymerase chain reaction (PCR) analysis of whole blood (collected in the first week of illness) … can be helpful for leptospirosis."</div>
+      </div>
+      <div class="ifgrid">
+        <div class="ifcol">
+          <div class="ifh"><span class="tip" tabindex="0" style="color:var(--success)">if positive →<span class="pop">What a positive result looks like, what it means, and the next action — so the move is actionable in both directions before you order it.</span></span></div>
+          <div class="f1">Detection of Leptospira DNA in whole blood.</div>
+          <div class="f2">Confirms the diagnosis of leptospirosis.</div>
+          <div class="f3">Continue targeted antibiotic therapy and supportive care for the multi-organ dysfunction.</div>
+        </div>
+        <div class="ifcol">
+          <div class="ifh">if negative →</div>
+          <div class="f1">PCR negative for Leptospira.</div>
+          <div class="f2">Does not rule it out (sensitivity isn't 100%), but broadens the differential.</div>
+          <div class="f3">Send paired acute/convalescent serum for MAT; re-evaluate rickettsial and malarial causes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dndy"><span class="tip" tabindex="0" style="border-bottom:none"><b>Do not do yet</b><span class="pop">Tests deliberately deferred — the engine guards against the overtesting you and Grubenhoff both flagged by saying what <b>not</b> to order yet, and why.</span></span> — Microscopic Agglutination Test (MAT): the antibody response is not yet reliable this early; send paired sera later.</div>
+
+    <div class="dndy"><b>If all moves negative</b> — re-evaluate for rickettsial disease (scrub typhus, RMSF) via serology or PCR, and confirm malaria is excluded by thick and thin blood smears.</div>
+
+    <div class="safety"><span class="tip" tabindex="0" style="color:var(--danger);border-bottom-color:var(--danger)">Safety floor<span class="pop">The minimum that must happen regardless of the diagnostic path — surfaced so acuity is never lost while the workup proceeds.</span></span> — the patient is in shock with multi-organ dysfunction; ensure aggressive hemodynamic support and active management of the hypoglycemia.</div>
+  </div>
 
   <div class="dd-title" id="dd">
     <h2>Defended differential</h2>
