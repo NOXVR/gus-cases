@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GusEngine — case walkthrough (undifferentiated zoonotic febrile illness)</title>
+<meta name="description" content="A pediatric case run through GusEngine, in the engine's own output, annotated so each section explains itself.">
+<meta property="og:title" content="GusEngine — annotated case walkthrough">
+<meta property="og:description" content="A febrile multisystem illness reasoned end to end — calibrated across a flat zoonotic neighborhood, with the test that separates them.">
+<meta property="og:type" content="article">
+<style>
+  :root{
+    --bg-primary:#fff;--bg-secondary:#f6f7f9;--surface:#fff;
+    --text-primary:#111827;--text-secondary:#374151;--text-muted:#6b7280;--text-tertiary:#9ca3af;
+    --border:#d1d5db;--border-light:#e5e7eb;--accent:#2563eb;--accent-border:#bfdbfe;
+    --info:#2563eb;--info-light:#dbeafe;--success:#059669;--success-light:#d1fae5;--warning:#b45309;--warning-light:#fef3c7;--danger:#dc2626;
+    --teal:#0f766e;--radius-sm:4px;--radius-md:8px;--radius-lg:12px;
+    --font-xs:11px;--font-sm:13px;--font-md:15px;--font-lg:18px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg-secondary);color:var(--text-primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto;background:var(--surface);padding:24px 26px 60px}
+  .x-header{border-bottom:2px solid var(--accent);padding:0 0 9px;margin:0 0 18px}
+  .x-header .brand{font-size:var(--font-xs);font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-tertiary)}
+  .x-header h1{font-size:20px;font-weight:600;margin:3px 0 2px}
+  .x-header .sub{font-size:var(--font-sm);color:var(--text-muted);margin:0}
+  .seclabel{font-size:var(--font-xs);font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-tertiary);margin:24px 0 8px}
+  .intro{background:var(--info-light);border:1px solid var(--accent-border);border-radius:var(--radius-lg);padding:15px 17px;margin:4px 0 6px}
+  .intro .hd{font-size:var(--font-md);font-weight:600;color:#1e40af;margin-bottom:6px}
+  .intro p{margin:0 0 9px;color:#1e3a5f;font-size:var(--font-sm);line-height:1.55}
+  .maplist{list-style:none;margin:6px 0 0;padding:0}
+  .maplist li{padding:6px 0;border-top:1px solid #c3d9f5;font-size:var(--font-sm);display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .maplist li:first-child{border-top:none}
+  .maplist .q{color:#1e3a5f;flex:1;min-width:200px}
+  .maplist a{color:var(--accent);text-decoration:none;white-space:nowrap}
+  .maplist a:hover{text-decoration:underline}
+  .query{background:var(--bg-secondary);border-left:3px solid var(--accent);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:12px 15px;font-size:12.5px;color:var(--text-primary);line-height:1.65;white-space:pre-wrap;margin:0 0 4px}
+  .pf-card{border:1px solid var(--accent);border-radius:var(--radius-lg);padding:15px 17px;margin:0 0 4px;background:var(--surface)}
+  .pf-head{display:flex;align-items:center;gap:9px;margin-bottom:11px;flex-wrap:wrap}
+  .pf-head .t{font-size:var(--font-sm);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--accent)}
+  .pf-head .meta{font-size:10px;letter-spacing:.4px;text-transform:uppercase;color:var(--text-tertiary)}
+  .oneliner{font-style:italic;font-size:var(--font-md);line-height:1.6;color:var(--text-primary);margin:0 0 12px}
+  .mini{font-size:var(--font-xs);font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-tertiary);margin:10px 0 4px}
+  .mode{font-size:var(--font-md);font-weight:600;color:var(--info)}
+  .facts{margin:2px 0 0;padding-left:18px;color:var(--text-secondary)}
+  .facts li{font-size:12.5px;margin:2px 0;line-height:1.45}
+  .sev{font-size:var(--font-sm);font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--warning);margin:22px 0 6px}
+  .dd-title{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:26px 0 9px}
+  .dd-title h2{font-size:var(--font-lg);font-weight:600;margin:0}
+  .dd-title .cap{font-size:var(--font-sm);color:var(--text-muted)}
+  .banner{font-size:var(--font-sm);color:var(--text-muted);background:var(--bg-secondary);border-radius:var(--radius-md);padding:8px 12px;margin:0 0 12px}
+  .card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:14px 16px;margin:0 0 11px}
+  .phys .fz{font-size:13.5px;color:var(--text-primary);line-height:1.55;margin:0 0 4px}
+  .phys .src{font-size:12px;color:var(--text-tertiary);margin:0 0 11px}
+  .lb{font-size:13px;line-height:1.55;color:var(--text-secondary);margin:0 0 8px}
+  .lb .tri{color:var(--success);font-weight:700}
+  .lb b{color:var(--text-primary);font-weight:600}
+  .by{color:var(--teal)}
+  .cand{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:13px 15px;margin:0 0 10px}
+  .cand.lead{border-color:var(--accent-border)}
+  .ch{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:7px}
+  .ch .num{font-size:var(--font-xs);font-weight:700;color:var(--text-tertiary)}
+  .ch .nm{font-size:var(--font-md);font-weight:600;color:var(--text-primary)}
+  .ch .pr{font-size:var(--font-sm);font-weight:700;color:var(--info)}
+  .band{font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:var(--bg-secondary);color:var(--text-muted)}
+  .gr{font-size:var(--font-xs);color:var(--success)}
+  .ln{font-size:13px;line-height:1.55;color:var(--text-secondary);margin:3px 0}
+  .ln .tri{color:var(--success);font-weight:700}
+  .ln .dn{color:var(--danger);font-weight:700}
+  .ln .di{color:var(--warning);font-weight:700}
+  .ln b{color:var(--text-primary);font-weight:600}
+  .lbl{color:var(--text-muted)}
+  .tail{font-size:12.5px;color:var(--text-muted);margin:2px 0 12px;line-height:1.5}
+  .confirm{background:var(--bg-secondary);border-radius:var(--radius-lg);padding:13px 16px;margin:8px 0 0}
+  .confirm .mv{font-size:var(--font-sm);color:var(--text-primary);line-height:1.6}
+  .miss{font-size:13px;color:var(--danger);line-height:1.55;margin:9px 0 0}
+  .fa-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:13px 16px;margin:0 0 4px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .pill-ok{font-size:11px;font-weight:600;color:var(--success);background:var(--success-light);padding:3px 10px;border-radius:12px;white-space:nowrap}
+  .ns-card{background:var(--bg-secondary);border-radius:var(--radius-lg);padding:15px 16px;margin:0 0 4px}
+  .ns-intro{font-style:italic;font-size:13.5px;color:var(--text-secondary);line-height:1.55;margin:0 0 13px}
+  .rank{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:13px 15px;margin:0 0 11px}
+  .rank .rh{font-size:var(--font-sm);margin-bottom:6px}
+  .rank .rh b{font-weight:700;color:var(--text-secondary);letter-spacing:.3px}
+  .rank .rh .disc{color:var(--text-muted)}
+  .rank .rh .e{color:var(--teal)}
+  .rank .mvt{font-size:var(--font-md);font-weight:600;color:var(--text-primary);line-height:1.4;margin:0 0 5px}
+  .rank .rat{font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0 0 9px}
+  .gbox{background:var(--bg-secondary);border-left:3px solid var(--success);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:9px 12px;margin:0 0 11px}
+  .gbox .gt{font-size:12.5px;color:var(--text-secondary);margin:0 0 3px}
+  .gbox .ck{color:var(--success);font-weight:600}
+  .gbox .gm{font-size:12.5px;color:var(--text-primary);margin:0 0 3px}
+  .gbox .gq{font-size:12px;font-style:italic;color:var(--text-muted);margin:0;line-height:1.5}
+  .ifgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ifcol{border:1px solid var(--border-light);border-radius:var(--radius-md);padding:10px 12px}
+  .ifcol .ifh{font-size:var(--font-xs);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--success);margin:0 0 6px}
+  .ifcol .f1{font-size:12.5px;color:var(--text-primary);margin:0 0 5px;line-height:1.45}
+  .ifcol .f2{font-size:12.5px;font-style:italic;color:var(--text-secondary);margin:0 0 5px;line-height:1.45}
+  .ifcol .f3{font-size:12.5px;font-weight:600;color:var(--text-primary);margin:0;line-height:1.45}
+  .dndy{font-size:12.5px;color:var(--text-secondary);margin:11px 0 0;line-height:1.5}
+  .dndy b{color:var(--text-primary);font-weight:600}
+  .safety{font-size:12.5px;color:var(--danger);background:#fdf1f1;border:1px solid #f3d4d4;border-radius:var(--radius-md);padding:9px 12px;margin:10px 0 0;line-height:1.5}
+  .tip{position:relative;border-bottom:1px dotted var(--text-tertiary);cursor:help;outline:none}
+  .tip>.pop{position:absolute;top:155%;left:0;width:300px;max-width:80vw;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius-md);padding:11px 13px;font-size:12.5px;
+    line-height:1.55;color:var(--text-secondary);font-style:normal;font-weight:400;z-index:30;opacity:0;
+    visibility:hidden;transition:opacity .12s;box-shadow:0 6px 22px rgba(17,24,39,.12)}
+  .tip:hover>.pop,.tip:focus>.pop,.tip:focus-within>.pop{opacity:1;visibility:visible}
+  .tip .mk{font-size:10px;color:var(--text-tertiary);vertical-align:1px;margin-left:2px}
+  .pop b{color:var(--text-primary);font-weight:600}
+  @media (max-width:560px){.wrap{padding:18px 14px 50px}.tip>.pop{width:230px}.ifgrid{grid-template-columns:1fr}}
+  @media print{body,.wrap{background:#fff}.tip>.pop{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="x-header">
+    <div class="brand">GusEngine · case walkthrough</div>
+    <h1>A 5-year-old with an undifferentiated febrile multisystem illness</h1>
+    <p class="sub">The engine's own output, annotated for Dr. Gold — hover any <span class="tip" tabindex="0">dotted label<span class="pop">Each says, plainly, <b>what that output is</b> and <b>why it's there</b>, so the page explains itself.</span></span> for what it means.</p>
+  </div>
+
+  <div class="intro">
+    <div class="hd">Following up on our conversation.</div>
+    <p>You raised the question of whether the engine leans on a ground-truth anchor or on the load-bearing facts. This case carries <b>no geographic anchor</b> — no country, no endemic-region label — only agricultural exposure and the clinical picture. Scrub typhus still surfaces at the top of the neighborhood. Where your points land:</p>
+    <ul class="maplist">
+      <li><span class="q">Load-bearing facts, not the ground-truth anchor</span><a href="#dd">the differential →</a></li>
+      <li><span class="q">Calibrated probability — don't over-close</span><a href="#dd">the flat spread →</a></li>
+      <li><span class="q">"What would refine the differential?"</span><a href="#ns">the discriminating test →</a></li>
+      <li><span class="q">Avoid Chicken Little / overtesting</span><a href="#ns">"do not do yet" →</a></li>
+      <li><span class="q">A 12% isn't thrown away — missing info keeps it</span><a href="#dd">the held neighborhood →</a></li>
+    </ul>
+  </div>
+
+  <div class="seclabel"><span class="tip" tabindex="0">Case as submitted<span class="pop">The input exactly as a clinician would enter it. Everything below is GusEngine's — derived from this and nothing else. Note there is no country or endemic-region named.</span></span></div>
+  <div class="query">5-year-old previously healthy girl. One week of high-grade intermittent fever to 39°C; headache with nausea, no vomiting; paroxysmal right ear pain (no discharge, tinnitus, dizziness or seizures); on day 7, reduced hearing progressing to right-sided hearing loss. Abdominal distension and mild abdominal pain; dysuria; normal bowel and urine output.
+Exposure — no insect or tick bite reported; plays regularly in agricultural fields; both parents are farmers.
+Exam — fever 39°C, mildly tachypneic (no oxygen requirement); cervical lymphadenopathy; NO rash; NO eschar on careful skin survey (axilla, groin, scalp, behind ears); tonsils mildly enlarged, no exudate; otoscopy unremarkable bilaterally; Weber lateralizes to the left (right sensorineural pattern); audiometry unavailable. Bilateral pleural effusion; mild hepatosplenomegaly.
+Labs (resource-limited district lab) — platelets 76,000 trending to a nadir of 47,000; Hb 10.6; neutrophils 70%; CRP 105; ESR 20; mild proteinuria.
+Imaging — CXR: bilateral pleural effusion with diffuse pulmonary infiltrates; ultrasound: mild hepatosplenomegaly.
+Rapid tests — Leishmaniasis RDT negative; Dengue RDT IgG positive (IgM not reported); blood/urine/throat cultures and antibody panel pending.</div>
+
+  <div class="seclabel">Diagnosis</div>
+
+  <div class="pf-card">
+    <div class="pf-head"><span class="t">Problem framing</span><span class="meta">agentic experiment · 1 iter</span></div>
+    <p class="oneliner">A young female from an agricultural environment presents with an acute, progressively worsening febrile multisystem illness characterized by unilateral sensorineural hearing loss, bilateral pleural effusions with diffuse pulmonary infiltrates, thrombocytopenia, and hepatosplenomegaly — without rash or eschar.</p>
+    <div class="mini"><span class="tip" tabindex="0">Cognitive mode<span class="pop">The kind of reasoning the case calls for — recognizing the syndrome, finding its cause, or confirming a known one. Here the syndrome is clear; the work is which cause.</span></span></div>
+    <div class="mode">Etiologic discrimination</div>
+    <div class="mini">Load-bearing facts</div>
+    <ul class="facts">
+      <li>5-year-old, previously healthy; one week of intermittent high-grade fever to 39°C.</li>
+      <li>Right ear pain then progressive right-sided <em>sensorineural</em> hearing loss (Weber lateralizes left; otoscopy normal).</li>
+      <li>Regular agricultural-field exposure; both parents farmers. No insect/tick bite reported.</li>
+      <li><em>No rash; no eschar</em> on a careful skin survey. Cervical lymphadenopathy; mild hepatosplenomegaly.</li>
+      <li>Bilateral pleural effusion with diffuse pulmonary infiltrates; mild abdominal pain, dysuria, mild proteinuria.</li>
+      <li>Thrombocytopenia 76,000 → 47,000; Hb 10.6; CRP 105 (markedly elevated).</li>
+      <li>Dengue RDT IgG positive (IgM not reported); leishmaniasis RDT negative; cultures/serology pending.</li>
+    </ul>
+  </div>
+
+  <div class="sev"><span class="tip" tabindex="0" style="color:var(--warning)">Severity: high<span class="pop">A safety read of how sick the patient is, kept separate from the differential — so acuity is never conflated with which diagnosis is most likely.</span></span></div>
+
+  <div class="seclabel">Frame adequacy — orphan check</div>
+  <div class="fa-card">
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.5"><span class="tip" tabindex="0">Orphan check<span class="pop">A check that <b>no important finding is left unexplained</b> by the differential. If a high-reliability fact were orphaned, it would flag a likely missing diagnosis. None here.</span></span>: orphan load <b style="color:var(--success)">none</b> — no high-reliability fact is left unexplained by the current candidates.</div>
+    <span class="pill-ok">frame adequate</span>
+  </div>
+
+  <div class="seclabel" id="ns">Next step</div>
+  <div class="ns-card">
+    <p class="ns-intro"><span class="tip" tabindex="0" style="font-style:normal">The decision tree<span class="pop">The highest-yield moves in order, what each result would mean, and what to do then — the "what would change the probability" made explicit, plus the test deliberately deferred and the safety floor.</span></span> — the differential is broad: several zoonotic and systemic infections that share agricultural exposure and multisystem involvement. The priority is to localize the bilateral effusions and the proteinuria while pursuing definitive serology for the leading candidates.</p>
+
+    <div class="rank">
+      <div class="rh"><b>Rank 1</b> &nbsp;<span class="disc"><span class="tip" tabindex="0">discriminates<span class="pop">The candidates this one move would help separate — chosen because it cuts across the whole neighborhood at once.</span></span>: <span class="e">Leptospirosis · Murine typhus · Scrub typhus · Severe EBV · Hantavirus · Lassa fever</span></span></div>
+      <div class="mvt">Thoracentesis with pleural-fluid analysis (cell count + differential, protein, LDH, glucose, pH, culture).</div>
+      <div class="rat">The bilateral effusion is the highest-value <em>unlocalized</em> finding; characterizing it as exudative vs transudative most directly narrows infectious/inflammatory from systemic causes — a bedside procedure with results in hours.</div>
+      <div class="gbox">
+        <div class="gt"><span class="tip" tabindex="0" style="border-bottom:none"><span class="ck">✓ corpus-grounded</span><span class="pop">Drawn from the literature, with the <b>verbatim source</b> below.</span></span> · Leptospirosis</div>
+        <div class="gm">Pleural-fluid analysis (exudative vs transudative criteria).</div>
+        <div class="gq">"Because multiple organ systems are involved, other bloodwork may include renal and liver function tests, coagulation studies, complete blood count, cerebrospinal fluid, and chest x-rays."</div>
+      </div>
+      <div class="ifgrid">
+        <div class="ifcol">
+          <div class="ifh"><span class="tip" tabindex="0" style="color:var(--success)">if positive →<span class="pop">What a positive result looks like, what it means, and the next action.</span></span></div>
+          <div class="f1">Exudative effusion (high protein/LDH, low pH).</div>
+          <div class="f2">Supports an infectious/inflammatory etiology; focuses on the systemic infections.</div>
+          <div class="f3">Empiric therapy if unstable, while awaiting specific serology/PCR.</div>
+        </div>
+        <div class="ifcol">
+          <div class="ifh">if negative →</div>
+          <div class="f1">Transudative effusion.</div>
+          <div class="f2">Suggests a systemic process (hypoalbuminemia, renal) over primary pleural infection.</div>
+          <div class="f3">Proceed to renal evaluation (ultrasound, albumin, spot protein/creatinine).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rank">
+      <div class="rh"><b>Rank 2</b> &nbsp;<span class="disc">discriminates: <span class="e">Scrub typhus · Murine typhus · Leptospirosis · Lassa fever</span></span></div>
+      <div class="mvt">Send serum for rickettsial (scrub/murine) and leptospirosis serology/PCR, and Lassa PCR.</div>
+      <div class="rat">These are the primary infectious candidates given the agricultural exposure and presentation; definitive testing confirms or excludes them — specialized lab, turnaround varies by region.</div>
+      <div class="ifgrid">
+        <div class="ifcol">
+          <div class="ifh">if positive →</div>
+          <div class="f1">Positive PCR or significant antibody titer.</div>
+          <div class="f2">Confirms the specific zoonotic/viral etiology.</div>
+          <div class="f3">Pathogen-specific treatment (e.g., doxycycline for rickettsial; antibiotics for leptospirosis).</div>
+        </div>
+        <div class="ifcol">
+          <div class="ifh">if negative →</div>
+          <div class="f1">Negative results.</div>
+          <div class="f2">Reduces these infections; widens the search.</div>
+          <div class="f3">Infectious-disease consult; consider rarer viral/inflammatory syndromes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dndy"><span class="tip" tabindex="0" style="border-bottom:none"><b>Do not do yet</b><span class="pop">Tests deliberately deferred — the engine guards against overtesting by saying what <b>not</b> to order yet, and why. Your Chicken-Little point.</span></span> — Bone marrow biopsy: highly invasive and premature; reserve for a negative infectious/inflammatory workup with persisting suspicion of a hematologic or infiltrative process.</div>
+
+    <div class="dndy"><b>If all moves negative</b> — consider a rheumatologic/immunologic evaluation (ANA, complement, immunoglobulin quantification) for a systemic inflammatory or autoimmune process.</div>
+
+    <div class="safety"><span class="tip" tabindex="0" style="color:var(--danger);border-bottom-color:var(--danger)">Safety floor<span class="pop">The minimum that must happen regardless of the diagnostic path — so acuity is never lost while the workup proceeds.</span></span> — monitor for rapid respiratory deterioration (hantavirus cardiopulmonary syndrome) or hemodynamic instability (sepsis/shock); escalate immediately regardless of pending tests.</div>
+  </div>
+
+  <div class="dd-title" id="dd">
+    <h2>Defended differential</h2>
+    <span class="cap">grounded · ranked differential</span>
+  </div>
+  <div class="banner"><span class="tip" tabindex="0">A flat, honest neighborhood<span class="pop">A <b>ranked differential, not a verdict.</b> Note the flat spread (19/14/13…): on a genuinely undifferentiated zoonotic neighborhood the engine does <b>not</b> fake a confident leader — it shows the spread and the test that separates them. A 12% candidate isn't thrown away; it's held until the discriminating result returns.</span></span></div>
+
+  <div class="card phys">
+    <div class="mini">Physiologic reading — what the findings mean</div>
+    <p class="fz"><b>Sensorineural, not middle-ear</b> — the deafness localizes to the inner ear / CN VIII (normal otoscopy, Weber lateralizes to the good ear): a cranial neuropathy or labyrinthitis from a systemic infectious/inflammatory process. <span style="color:var(--success)">✓</span></p>
+    <p class="src">right ear pain · progressive right SNHL · otoscopy normal · Weber left</p>
+    <p class="fz"><b>Capillary-leak physiology</b> — endothelial activation and microvascular hyperpermeability drive fluid into the pleural/pulmonary space and platelet consumption/sequestration. <span style="color:var(--success)">✓</span></p>
+    <p class="src">bilateral pleural effusion + diffuse infiltrates · platelets 76k → 47k</p>
+    <p class="lb"><span class="tri">▲</span> <span class="lbl" style="font-weight:600;font-size:var(--font-xs);letter-spacing:.4px;text-transform:uppercase">load-bearing</span> <b>Dengue RDT IgG positive</b> — read as past exposure / cross-reactivity, not acute dengue: a CRP of 105 with diffuse infiltrates is atypical for uncomplicated dengue, pointing to an active alternative process. <span class="by">(weighed across the whole neighborhood)</span></p>
+  </div>
+
+  <div class="cand lead">
+    <div class="ch"><span class="num">#1</span><span class="nm">Scrub typhus</span><span class="pr">19%</span><span class="band">provisional</span><span class="gr">✓ grounded</span></div>
+    <div class="ln"><span class="tip tri" tabindex="0">▲ explains<span class="pop">The load-bearing findings this candidate accounts for, with the mechanism — the "this is the picture because of these" reasoning.</span></span> the SNHL (Orientia endothelial vasculitis → labyrinthine microvascular ischemia), the false-positive Dengue IgG (polyclonal B-cell cross-reactivity), and the proteinuria.</div>
+    <div class="ln"><span class="tri">▲ fits typically</span> <span class="lbl">:</span> agricultural exposure · week of high fever · headache · cervical lymphadenopathy · hepatosplenomegaly · pleural effusions · thrombocytopenia · CRP 105</div>
+    <div class="ln"><span class="tip di" tabindex="0">◆ atypical (high-information)<span class="pop">Present-but-unusual — or expected-but-absent — features. The engine surfaces scrub typhus at the top <b>despite</b> these, rather than discounting the diagnosis because its hallmark is missing.</span></span> <span class="lbl">:</span> no rash · <b>no eschar on a careful skin survey</b> (the classic finding, absent here)</div>
+  </div>
+
+  <div class="cand">
+    <div class="ch"><span class="num">#2</span><span class="nm">Murine typhus</span><span class="pr">14%</span><span class="band">provisional</span><span class="gr">✓ grounded</span></div>
+    <div class="ln"><span class="tri">▲ explains</span> the SNHL (R. typhi microvascular vasculitis) and the IgG cross-reactivity.</div>
+    <div class="ln"><span class="dn">▼ argues against</span> the absence of the usual maculopapular rash.</div>
+  </div>
+
+  <div class="cand">
+    <div class="ch"><span class="num">#3</span><span class="nm">Leptospirosis</span><span class="pr">13%</span><span class="band">provisional</span><span class="gr">✓ grounded</span></div>
+    <div class="ln"><span class="tri">▲ explains</span> the renal picture (Leptospira colonizes renal tubules → proteinuria + dysuria), the pulmonary leak, and SNHL via aseptic meningitis/vasculitis.</div>
+    <div class="ln"><span class="dn">▼ argues against</span> the absence of conjunctival suffusion.</div>
+  </div>
+
+  <div class="cand">
+    <div class="ch"><span class="num">#4</span><span class="nm">Brucellosis</span><span class="pr">12%</span><span class="band">provisional</span><span class="gr">✓ grounded</span></div>
+    <div class="ln"><span class="tri">▲ explains</span> CN VIII involvement (neurobrucellosis), the zoonotic acute-phase response, and the hepatosplenomegaly.</div>
+    <div class="ln"><span class="dn">▼ argues against</span> the absence of osteoarticular symptoms.</div>
+  </div>
+
+  <div class="cand">
+    <div class="ch"><span class="num">#5</span><span class="nm">Spotted-fever rickettsiosis</span><span class="pr">11%</span><span class="band">provisional</span><span class="gr">✓ grounded</span></div>
+    <div class="ln"><span class="tri">▲ explains</span> the capillary-leak triad via rickettsial endothelial vasculitis.</div>
+    <div class="ln"><span class="dn">▼ argues against</span> the absence of a maculopapular/petechial rash.</div>
+  </div>
+
+  <div class="cand">
+    <div class="ch"><span class="num">#6</span><span class="nm">Severe Epstein–Barr virus infection</span><span class="pr">11%</span><span class="band">provisional</span><span class="gr">✓ grounded</span></div>
+    <div class="ln"><span class="tri">▲ explains</span> the lymphadenopathy, tonsillar enlargement, hepatosplenomegaly, and the false-positive Dengue IgG (polyclonal B-cell activation).</div>
+    <div class="ln"><span class="dn">▼ argues against</span> the neutrophil-predominant count and CRP of 105 (more atypical for uncomplicated EBV).</div>
+  </div>
+
+  <div class="tail">Also weighed, ~10% each: <b>Hantavirus infection</b> (pulmonary capillary leak) and <b>Lassa fever</b> (held lower for the absent West-African exposure). None is discarded — each stays until the discriminating test returns.</div>
+
+  <div class="confirm">
+    <div class="mini" style="margin-top:0"><span class="tip" tabindex="0">What confirms / changes the answer<span class="pop">The highest-yield next tests and what each would rule in or out — the missing information that would move the probabilities. Decision support, not a decision.</span></span></div>
+    <div class="mv">→ <b>Thoracentesis with pleural-fluid analysis</b> — separates the whole neighborhood (exudative vs transudative)</div>
+    <div class="mv" style="margin-top:5px">→ <b>Rickettsial + leptospirosis serology/PCR</b> — confirms or excludes the leading zoonoses</div>
+  </div>
+
+  <div class="miss"><span class="tip" tabindex="0" style="color:var(--danger)">Cannot-miss (carried)<span class="pop">Dangerous diagnoses worth <b>actively excluding regardless of rank</b> — surfaced separately so probability never buries safety.</span></span> : Leptospirosis · Meningitis or intracranial abscess · Hemophagocytic lymphohistiocytosis (HLH)</div>
+
+  <footer>
+    GusEngine surfaces the reasoning and the data to decide on — it does not issue a verdict. The published case resolved as scrub typhus. Prepared for discussion; not for clinical use.
+  </footer>
+
+</div>
+</body>
+</html>
