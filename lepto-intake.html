@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GusEngine — intake over time (serial presentation)</title>
+<meta name="description" content="The same case fed to GusEngine one visit at a time — showing how it advances rather than re-states as information arrives serially.">
+<meta property="og:title" content="GusEngine — reasoning over serial visits">
+<meta property="og:description" content="One case, three intake visits. Each visit the engine says what changed, what it raised or set aside, and what it's converging toward.">
+<style>
+  :root{
+    --bg-primary:#fff;--bg-secondary:#f6f7f9;--surface:#fff;
+    --text-primary:#111827;--text-secondary:#374151;--text-muted:#6b7280;--text-tertiary:#9ca3af;
+    --border:#d1d5db;--border-light:#e5e7eb;--accent:#2563eb;--accent-border:#bfdbfe;
+    --info:#2563eb;--info-light:#dbeafe;--success:#059669;--warning:#b45309;--warning-light:#fef3c7;--danger:#dc2626;
+    --teal:#0f766e;--radius-sm:4px;--radius-md:8px;--radius-lg:12px;
+    --font-xs:11px;--font-sm:13px;--font-md:15px;--font-lg:18px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg-secondary);color:var(--text-primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto;background:var(--surface);padding:24px 26px 60px}
+  .x-header{border-bottom:2px solid var(--accent);padding:0 0 9px;margin:0 0 18px}
+  .x-header .brand{font-size:var(--font-xs);font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-tertiary)}
+  .x-header h1{font-size:20px;font-weight:600;margin:3px 0 2px}
+  .x-header .sub{font-size:var(--font-sm);color:var(--text-muted);margin:0}
+  .intro{background:var(--info-light);border:1px solid var(--accent-border);border-radius:var(--radius-lg);padding:15px 17px;margin:4px 0 8px}
+  .intro .hd{font-size:var(--font-md);font-weight:600;color:#1e40af;margin-bottom:6px}
+  .intro p{margin:0;color:#1e3a5f;font-size:var(--font-sm);line-height:1.55}
+  .visit-h{font-size:var(--font-sm);font-weight:700;color:var(--text-tertiary);letter-spacing:.5px;text-transform:uppercase;margin:30px 0 8px;display:flex;align-items:center;gap:8px}
+  .visit-h .n{background:var(--text-secondary);color:#fff;font-size:11px;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+  .query{background:var(--bg-secondary);border-left:3px solid var(--accent);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:11px 14px;font-size:12.5px;color:var(--text-primary);line-height:1.6;margin:0 0 10px}
+  .hold{background:var(--bg-secondary);border-radius:var(--radius-lg);padding:15px 16px;margin:0 0 6px}
+  .hold-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:11px;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--warning);background:var(--warning-light);padding:4px 11px;border-radius:var(--radius-md)}
+  .vtag{font-size:12px;color:var(--text-muted)}
+  .oneliner{font-size:var(--font-md);font-weight:500;color:var(--text-primary);line-height:1.55;margin:0 0 12px}
+  .delta{background:var(--surface);border:1px solid var(--border-light);border-left:3px solid var(--warning);border-radius:var(--radius-md);padding:13px 15px;margin:0 0 12px}
+  .delta-h{display:flex;align-items:center;gap:7px;font-size:var(--font-sm);font-weight:600;color:var(--text-primary);margin-bottom:9px}
+  .delta-h .ic{color:var(--warning)}
+  .nlabel{font-size:var(--font-xs);color:var(--text-muted);margin:0 0 5px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+  .chip{font-size:11px;color:var(--text-secondary);background:var(--bg-secondary);border:1px solid var(--border-light);padding:2px 9px;border-radius:20px}
+  .shift{font-size:13.5px;color:var(--text-primary);line-height:1.55;margin:0 0 9px}
+  .dl{font-size:13px;line-height:1.55;margin:4px 0}
+  .dl .up{color:var(--warning);font-weight:700}
+  .dl .dn{color:var(--text-muted);font-weight:700}
+  .dl .cv{color:var(--info);font-weight:700}
+  .dl b{color:var(--text-primary);font-weight:600}
+  .dl.unexp{color:var(--text-muted);font-size:12.5px;margin-top:7px}
+  .dl.unexp .w{color:var(--text-secondary)}
+  .fullpic{font-size:12.5px;color:var(--text-muted);line-height:1.55;margin:0 0 12px}
+  .fullpic .fl{font-weight:700;font-size:var(--font-xs);letter-spacing:.4px;text-transform:uppercase;color:var(--text-tertiary)}
+  .card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:12px 14px;margin:0 0 11px}
+  .ch{display:flex;align-items:center;gap:6px;font-size:var(--font-sm);font-weight:600;color:var(--text-primary);margin-bottom:7px}
+  .ch .ic{color:var(--warning)}
+  .ch.info .ic{color:var(--text-secondary)}
+  .cm{padding:5px 0}
+  .cm .nm{font-size:13px;font-weight:500;color:var(--text-primary)}
+  .cm .ro{font-size:12px;color:var(--text-muted)}
+  .cm .still{font-size:11px;color:var(--text-muted)}
+  .cm .new{font-size:9.5px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--warning);border:1px solid var(--warning);border-radius:10px;padding:0 6px;margin-left:3px}
+  .cm .cite{font-size:11px;color:var(--text-tertiary);font-style:italic;margin-top:2px;line-height:1.45}
+  .cm .ck{color:var(--success);font-style:normal}
+  .so{font-size:12.5px;color:var(--text-secondary);line-height:1.5;margin:5px 0;padding-left:2px}
+  .so b{color:var(--text-primary);font-weight:600}
+  .so .vs{color:var(--text-tertiary)}
+  .gn{display:flex;gap:10px;align-items:flex-start;padding:5px 0}
+  .gn .gi{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--info-light);color:var(--info);font-size:11px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
+  .gn .ga{font-size:13px;font-weight:500;color:var(--text-primary)}
+  .gn .gt{font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);border:1px solid var(--border-light);border-radius:20px;padding:1px 7px;margin-left:6px}
+  .gn .gs{font-size:12px;color:var(--text-secondary);margin-top:1px}
+  .holdopen{margin:12px 0 4px}
+  .holdopen .hl{font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:7px}
+  .pills{display:flex;flex-wrap:wrap;gap:7px}
+  .pill{font-size:12px;color:var(--text-secondary);background:var(--surface);border:1px solid var(--border-light);padding:4px 11px;border-radius:20px}
+  .ready{font-size:13px;color:var(--text-secondary);line-height:1.5;margin:12px 0 0;padding-top:11px;border-top:1px solid var(--border-light)}
+  footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--border-light);color:var(--text-tertiary);font-size:12px;line-height:1.6}
+  .tip{position:relative;border-bottom:1px dotted var(--text-tertiary);cursor:help;outline:none}
+  .tip>.pop{position:absolute;top:160%;left:0;width:300px;max-width:80vw;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius-md);padding:11px 13px;font-size:12.5px;
+    line-height:1.55;color:var(--text-secondary);font-weight:400;z-index:30;opacity:0;visibility:hidden;
+    transition:opacity .12s;box-shadow:0 6px 22px rgba(17,24,39,.12)}
+  .tip:hover>.pop,.tip:focus>.pop,.tip:focus-within>.pop{opacity:1;visibility:visible}
+  .pop b{color:var(--text-primary);font-weight:600}
+  @media (max-width:560px){.wrap{padding:18px 14px 50px}.tip>.pop{width:230px}}
+  @media print{body,.wrap{background:#fff}.tip>.pop{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="x-header">
+    <div class="brand">GusEngine · intake over time</div>
+    <h1>One case, three visits — reasoning as information arrives</h1>
+    <p class="sub">The same patient fed to the engine one visit at a time. Hover any <span class="tip" tabindex="0">dotted label<span class="pop">Each says, plainly, <b>what that output is</b> and <b>why it's there</b>.</span></span> for what it means.</p>
+  </div>
+
+  <div class="intro">
+    <div class="hd">Andrew — the serial-presentation point.</div>
+    <p>You noted that information reaches a clinician serially, and that a machine should react to the cadence — not re-state the frame each turn, and not pretend it has data it hasn't been given. This is the same leptospirosis case entered as three visits. In intake mode the engine deliberately withholds a committed differential; each visit it reports <b>what changed</b> — what's new, what it raised or set aside, what it's converging toward, and what remains unexplained — and carries everything forward. Watch it converge on leptospirosis as the findings arrive.</p>
+  </div>
+
+  <div class="visit-h"><span class="n">1</span> Visit 1 — referral</div>
+  <div class="query">7-year-old boy. Referred to the Paediatric Intensive Care Unit. Presenting complaints: myalgia and a generalized rash. History of present illness: sudden onset of fever, headache and vomiting, present for 2 days prior to admission. Referring (working) diagnosis: staphylococcal toxic shock syndrome. Treatment in progress: vancomycin. Residence: rural area. Prenatal, natal, postnatal and family histories: unremarkable.</div>
+  <div class="hold">
+    <div class="hold-top"><span class="badge"><span class="tip" tabindex="0" style="border-bottom:none;color:var(--warning)">◷ Intake — gathering, not diagnosing yet<span class="pop">Intake mode: the engine deliberately <b>withholds a committed differential</b> while gathering. It names the can't-miss neighborhood and what to collect next — it does not pretend to know the answer yet.</span></span></span><span class="vtag"><span class="tip" tabindex="0">Visit 1 · carries forward<span class="pop">Every fact, and every prior visit, persists. Nothing is lost between turns.</span></span></span></div>
+    <p class="oneliner">7-year-old male · A young male from a rural area presents with an acute, severe febrile multisystem illness characterized by sudden-onset fever, headache, vomiting, myalgia and a generalized rash.</p>
+    <div class="card">
+      <div class="ch"><span class="ic">⚠</span> <span class="tip" tabindex="0">Keep in mind — can't-miss (to rule out, not yet the answer)<span class="pop">Dangerous diagnoses to actively exclude — surfaced regardless of probability, kept separate from "most likely" so safety is never buried.</span></span></div>
+      <div class="cm"><span class="nm">Meningococcemia / Invasive Meningococcal Disease</span> <span class="ro">— rule out, not yet the answer</span><div class="cite">"Symptoms of meningococcemia can include abrupt onset of fever, chills, vomiting, diarrhea, and a petechial or purpuric rash, which can progress to purpura fulminans." <span class="ck">✓</span></div></div>
+      <div class="cm"><span class="nm">Toxic Shock Syndrome</span> <span class="ro">— rule out, not yet the answer</span><div class="cite">"Diagnostic criteria for staphylococcal and streptococcal TSS … Hypotension — systolic blood pressure &lt;5th percentile for children &lt;16 years." <span class="ck">✓</span></div></div>
+      <div class="cm"><span class="nm">Rocky Mountain Spotted Fever (RMSF)</span> <span class="ro">— rule out, not yet the answer</span><div class="cite">"RMSF clinical presentation includes fever, headache, chills, myalgias, and fatigue." <span class="ck">✓</span></div></div>
+    </div>
+    <div class="ch info"><span class="ic">◆</span> <span class="tip" tabindex="0">What stands out (worth chasing)<span class="pop">Findings that don't sit comfortably with the obvious explanation — the discordances worth pursuing, each with what it argues for and against.</span></span></div>
+    <div class="so"><b>Treatment in progress: vancomycin</b> — the empiric glycopeptide is ineffective against a likely intracellular/atypical organism, so the active process remains untreated and progressing. <span class="vs">— sits against a generalized rash and sudden systemic symptoms in a rural resident</span></div>
+    <div class="so"><b>Vomiting, sudden onset, 2 days</b> — CNS irritation, systemic toxemia, or visceral involvement rather than a superficial process. <span class="vs">— sits against a benign self-limiting viral exanthem</span></div>
+    <div class="ch info" style="margin-top:11px"><span class="ic">▸</span> <span class="tip" tabindex="0">What I'd gather next (least-invasive first)<span class="pop">The least-invasive next steps, each tied to what it would reveal — gather before committing. This is the guard against overtesting and premature closure.</span></span></div>
+    <div class="gn"><span class="gi">1</span><div><span class="ga">Detailed environmental exposure history</span><span class="gt">history</span><div class="gs">Exposure to water, wet soil, or urine of infected animals (rodents, livestock)</div></div></div>
+    <div class="gn"><span class="gi">2</span><div><span class="ga">Complete blood count (CBC)</span><span class="gt">lab</span><div class="gs">Thrombocytopenia</div></div></div>
+    <div class="gn"><span class="gi">3</span><div><span class="ga">Basic metabolic panel (BMP)</span><span class="gt">lab</span><div class="gs">Hyponatremia</div></div></div>
+    <div class="gn"><span class="gi">4</span><div><span class="ga">Liver function tests (LFTs)</span><span class="gt">lab</span><div class="gs">Elevated transaminases</div></div></div>
+    <div class="holdopen"><div class="hl"><span class="tip" tabindex="0">Holding open (not yet narrowed to a diagnosis)<span class="pop">Broad categories kept deliberately open — not a diagnosis, but the space the answer might still live in. It narrows as visits accrue.</span></span></div><div class="pills"><span class="pill">chronic / occult infection</span><span class="pill">other systemic process</span></div></div>
+    <div class="ready">Not enough yet to commit to a named differential — the gathers above would sharpen it. Nothing is lost; it carries forward each visit.</div>
+  </div>
+
+  <div class="visit-h"><span class="n">2</span> Visit 2 — exam &amp; vitals</div>
+  <div class="query">Temperature 38.5°C; BP 82/60; HR 169; RR 27; GCS 11; capillary refill 3 s. Diffuse erythema; intraoral bleeding; bilateral conjunctival suffusion; tenderness in the calf muscles; hepatomegaly 3 cm and splenomegaly 2 cm below the costal margins.</div>
+  <div class="hold">
+    <div class="hold-top"><span class="badge">◷ Intake — gathering, not diagnosing yet</span><span class="vtag">Visit 2 · carries forward</span></div>
+    <div class="delta">
+      <div class="delta-h"><span class="ic">◷</span> <span class="tip" tabindex="0" style="border-bottom:none;color:var(--text-primary)">What changed this visit<span class="pop">The heart of serial reasoning: each visit the engine reports <b>what moved</b> — new facts, how the picture shifted, what it raised or set aside, what it's converging toward, and what's still unexplained. It advances the case; it does not re-state it.</span></span></div>
+      <div class="nlabel"><span class="tip" tabindex="0">New this visit<span class="pop">The facts added at this visit — the engine reacts to <b>these</b>, not to a re-read of everything it already had.</span></span></div>
+      <div class="chips"><span class="chip">Temperature 38.5°C</span><span class="chip">BP 82/60</span><span class="chip">HR 169</span><span class="chip">GCS 11</span><span class="chip">capillary refill 3 s</span><span class="chip">diffuse erythema</span><span class="chip">intraoral bleeding</span><span class="chip">conjunctival suffusion</span><span class="chip">calf tenderness</span><span class="chip">hepatosplenomegaly</span></div>
+      <p class="shift">The picture has shifted from a non-specific febrile illness to decompensated shock with multi-organ involvement — specifically marked by conjunctival suffusion, calf tenderness and hepatosplenomegaly.</p>
+      <div class="dl"><span class="tip up" tabindex="0">▲ raised<span class="pop">A diagnosis that <b>entered or rose</b> because of this visit's findings — named with the reason it moved, not silently re-ordered.</span></span> <b>Leptospirosis (Weil's disease)</b> — entered on the emergence of classic signs: conjunctival suffusion, calf tenderness and hepatosplenomegaly.</div>
+      <div class="dl"><span class="tip dn" tabindex="0">▼ set aside<span class="pop">A diagnosis the new findings make <b>less likely</b> — named with the reason, rather than disappearing without explanation.</span></span> Rocky Mountain Spotted Fever — the progression toward multi-organ failure and the specific ocular findings favor other etiologies.</div>
+      <div class="dl"><span class="tip cv" tabindex="0">⟶ converging toward<span class="pop">Where the accumulating evidence is pointing — the engine <b>narrowing over time</b> as findings arrive.</span></span> <b>Meningococcemia / septic shock</b> — progression to hypotension, tachycardia and altered mental status indicates worsening circulatory collapse.</div>
+      <div class="dl unexp"><span class="tip" tabindex="0" style="border-bottom-color:var(--text-muted)">⚠ still unexplained<span class="pop">Findings flagged earlier that remain unaccounted for — <b>carried forward, not forgotten</b>, even as the picture evolves.</span></span> <span class="w">Vomiting, sudden onset, 2-day duration</span></div>
+    </div>
+    <p class="fullpic"><span class="fl">Full picture ·</span> 7-year-old male · an acute, progressively worsening febrile multisystem illness characterized by bilateral conjunctival suffusion, calf-muscle tenderness, hepatosplenomegaly and diffuse erythema with intraoral bleeding, accompanied by tachycardia and altered mental status.</p>
+    <div class="card">
+      <div class="ch"><span class="ic">⚠</span> Keep in mind — can't-miss (to rule out, not yet the answer)</div>
+      <div class="cm"><span class="nm">Meningococcemia / Septic Shock</span> <span class="still"><span class="tip" tabindex="0">· still tracking<span class="pop">A can't-miss that <b>persists</b> across visits — shown condensed so it doesn't re-nag, but never dropped.</span></span></span></div>
+      <div class="cm"><span class="nm">Leptospirosis (Weil's Disease)</span><span class="tip new" tabindex="0">new<span class="pop">A can't-miss that <b>entered this visit</b> — newly surfaced by the exam findings.</span></span> <span class="ro">— rule out, not yet the answer</span><div class="cite">"This is a severe infection, and its manifestations include fever, renal failure, jaundice, hemorrhage and respiratory distress." <span class="ck">✓</span></div></div>
+      <div class="cm"><span class="nm">Toxic Shock Syndrome</span> <span class="still">· still tracking</span></div>
+    </div>
+    <div class="ch info"><span class="ic">◆</span> What stands out (worth chasing)</div>
+    <div class="so"><b>Intraoral bleeding</b> — a consumptive coagulopathy or profound endothelial disruption, not addressed by Gram-positive coverage. <span class="vs">— sits against uncomplicated bacterial sepsis</span></div>
+    <div class="so"><b>Bilateral conjunctival suffusion</b> — a pathogen with microvascular tropism causing systemic endothelial activation, typical of atypical/zoonotic etiologies. <span class="vs">— sits against common pyogenic infection</span></div>
+    <div class="so"><b>Treatment in progress: vancomycin</b> — the shock state is non-responsive to vancomycin, pointing to a Gram-negative, intracellular, or toxin-mediated process. <span class="vs">— sits against the rapid deterioration (GCS 11, hypotension, bleeding)</span></div>
+    <div class="ch info" style="margin-top:11px"><span class="ic">▸</span> What I'd gather next (least-invasive first)</div>
+    <div class="gn"><span class="gi">1</span><div><span class="ga">Leptospira MAT, PCR or serology</span><span class="gt">lab</span><div class="gs">Leptospira-specific confirmation (MAT, PCR, or IgM)</div></div></div>
+    <div class="gn"><span class="gi">2</span><div><span class="ga">Blood culture or PCR</span><span class="gt">lab</span><div class="gs">Isolation of Neisseria meningitidis (or positive PCR)</div></div></div>
+    <div class="gn"><span class="gi">3</span><div><span class="ga">Complete blood count (CBC)</span><span class="gt">lab</span><div class="gs">Severe thrombocytopenia (&lt; 100,000/mm³)</div></div></div>
+    <div class="holdopen"><div class="hl">Holding open (not yet narrowed to a diagnosis)</div><div class="pills"><span class="pill">chronic / occult infection</span><span class="pill">other systemic process</span></div></div>
+    <div class="ready">Not enough yet to commit — starting with Leptospira testing would sharpen it. Nothing is lost; it carries forward each visit.</div>
+  </div>
+
+  <div class="visit-h"><span class="n">3</span> Visit 3 — laboratory</div>
+  <div class="query">WBC 12,540; neutrophils 11,490; lymphocytes 210; Hb 11.7; platelets 192,000. VBG pH 7.33; PCO₂ 19.1; HCO₃ 10; lactate 2.4. Glucose 38; BUN 41.5; creatinine 0.9; sodium 128; potassium 3.3; total bilirubin 3.0; albumin 1.9; ALT 145; AST 88; LDH 425; CK 519. CRP 260.4; ESR 40; procalcitonin 84.3. PT 30.2 s; INR 2.4; fibrinogen 436; D-dimer 7699. Blood, urine and throat cultures: no growth.</div>
+  <div class="hold">
+    <div class="hold-top"><span class="badge">◷ Intake — gathering, not diagnosing yet</span><span class="vtag">Visit 3 · carries forward</span></div>
+    <div class="delta">
+      <div class="delta-h"><span class="ic">◷</span> What changed this visit</div>
+      <div class="nlabel">New this visit</div>
+      <div class="chips"><span class="chip">WBC 12,540</span><span class="chip">lymphocytes 210</span><span class="chip">platelets 192,000</span><span class="chip">glucose 38</span><span class="chip">sodium 128</span><span class="chip">albumin 1.9</span><span class="chip">bilirubin 3.0</span><span class="chip">CRP 260</span><span class="chip">PT 30.2 s</span><span class="chip">D-dimer 7699</span></div>
+      <p class="shift">The picture has shifted from a syndromic presentation to severe metabolic and hematologic derangement — profound hypoglycemia, hyponatremia, coagulopathy and marked systemic inflammation.</p>
+      <div class="dl"><span class="cv">⟶ converging toward</span> <b>Leptospirosis (Weil's disease)</b> — severe jaundice, renal-sparing hepatic dysfunction and profound systemic inflammation in a rural patient remains highly characteristic.</div>
+      <div class="dl unexp"><span style="color:var(--text-muted)">⚠ still unexplained</span> <span class="w">intraoral bleeding · bilateral conjunctival suffusion · calf-muscle tenderness</span></div>
+    </div>
+    <p class="fullpic"><span class="fl">Full picture ·</span> 7-year-old male · an acute, severe febrile multisystem illness characterized by altered mental status, conjunctival suffusion, calf tenderness and diffuse erythema, accompanied by profound hypoglycemia, hyponatremia, coagulopathy and elevated inflammatory markers.</p>
+    <div class="card">
+      <div class="ch"><span class="ic">⚠</span> Keep in mind — can't-miss (to rule out, not yet the answer)</div>
+      <div class="cm"><span class="nm">Leptospirosis (Weil's Disease)</span> <span class="still">· still tracking</span></div>
+      <div class="cm"><span class="nm">Meningococcemia</span> <span class="still">· still tracking</span></div>
+      <div class="cm"><span class="nm">Toxic Shock Syndrome</span> <span class="still">· still tracking</span></div>
+    </div>
+    <div class="ch info"><span class="ic">◆</span> What stands out (worth chasing)</div>
+    <div class="so"><b>Fibrinogen 436</b> — an intense, cytokine-driven acute-phase synthesis that compensates for ongoing factor consumption despite severe liver injury. <span class="vs">— sits against the coagulopathy (PT 30.2 s, INR 2.4) and massive fibrinolysis (D-dimer 7699)</span></div>
+    <div class="so"><b>Glucose 38</b> — exhaustion of hepatic glycogen and gluconeogenic dysfunction, indicating critical metabolic collapse. <span class="vs">— sits against the usual counter-regulatory hyperglycemia of acute infection</span></div>
+    <div class="so"><b>Conjunctival suffusion &amp; calf tenderness</b> — an endothelial-targeting process pointing toward intracellular/zoonotic pathogens. <span class="vs">— sits against standard pyogenic sepsis</span></div>
+    <div class="ch info" style="margin-top:11px"><span class="ic">▸</span> What I'd gather next (least-invasive first)</div>
+    <div class="gn"><span class="gi">1</span><div><span class="ga">Thick &amp; thin blood smears / malaria RDT</span><span class="gt">lab</span><div class="gs">Plasmodium parasitemia on smear or positive RDT</div></div></div>
+    <div class="gn"><span class="gi">2</span><div><span class="ga">Tissue biopsy (skin, bone or liver)</span><span class="gt">procedure</span><div class="gs">Histopathology if an infiltrative process is suspected</div></div></div>
+    <div class="holdopen"><div class="hl"><span class="tip" tabindex="0">Holding open (not yet narrowed to a diagnosis)<span class="pop">Note how the held-open space <b>widened</b> this visit as the labs surfaced cytopenias and organ involvement — the engine broadens the safety net even as it converges, rather than tunneling on the leader.</span></span></div><div class="pills"><span class="pill">primary hematologic process</span><span class="pill">chronic / occult infection</span><span class="pill">systemic autoimmune / inflammatory</span><span class="pill">hemophagocytic / immune-dysregulation</span><span class="pill">infiltrative / neoplastic</span></div></div>
+    <div class="ready">Still gathering — but converging on leptospirosis while keeping the broader net open. From here a clinician can run the full differential.</div>
+  </div>
+
+  <footer>
+    Three visits, one case. The engine advances with each — naming what changed, raising and setting aside with reasons, carrying the unexplained forward, and converging on leptospirosis without ever claiming data it wasn't given. Prepared for discussion; not for clinical use.
+  </footer>
+
+</div>
+</body>
+</html>
