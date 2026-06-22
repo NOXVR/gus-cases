@@ -131,7 +131,7 @@
     <p>You made several points about how diagnostic reasoning actually works. Rather than describe how GusEngine answers them, here is one case in the engine's own output, with your points marked. Where each lands:</p>
     <ul class="maplist">
       <li><span class="q">Problem representation does the load-bearing work</span><a href="#pf">the one-liner →</a></li>
-      <li><span class="q">The response should match the cognitive mode</span><a href="#pf">reasoning mode →</a></li>
+      <li><span class="q">The response should match the cognitive mode</span><a href="#pf">the mode line →</a></li>
       <li><span class="q">Atypicality is the gold, never discounted</span><a href="#dd">the ◆ markers →</a></li>
       <li><span class="q">Pattern recognition isn't citable; justification is</span><a href="#dd">the ✓ sources →</a></li>
       <li><span class="q">Don't-miss is orthogonal to most-likely</span><a href="#miss">cannot-miss →</a></li>
@@ -162,8 +162,8 @@ Cultures — blood, urine and throat: no pathogenic organisms isolated.</div>
 
   <div class="pf-card" id="pf">
     <div class="pf-head"><span class="t">Problem framing</span><span class="meta">agentic experiment · 1 iter</span></div>
-    <p class="oneliner"><span class="tip" tabindex="0">A young child from a rural area with an acute, severe febrile multisystem illness — bilateral conjunctival suffusion, calf-muscle tenderness, diffuse erythema with intraoral bleeding, and hepatosplenomegaly — accompanied by profound hypoglycemia, hyponatremia, hypoalbuminemia, and coagulopathy.<span class="pop">GusEngine's one-line <b>problem representation</b> — the same abstraction a clinician forms before naming a diagnosis. Everything downstream reasons from this framing, not the raw fact list.</span></span></p>
-    <div class="mini"><span class="tip" tabindex="0">Cognitive mode<span class="pop">The <b>kind of reasoning</b> the case calls for — recognizing the syndrome, finding its cause, or confirming a known one. Here the syndrome is clear; the work is which cause, so the output focuses on discriminators. The register matches the mode.</span></span></div>
+    <p class="oneliner"><span class="tip" tabindex="0">A young child from a rural area with an acute, severe febrile multisystem illness — bilateral conjunctival suffusion, calf-muscle tenderness, diffuse erythema with intraoral bleeding, and hepatosplenomegaly — accompanied by profound hypoglycemia, hyponatremia, hypoalbuminemia, and coagulopathy.<span class="pop">GusEngine's one-line <b>problem representation</b> — a single abstraction over the case that the rest of the output is scoped to, rather than the raw fact list.</span></span></p>
+    <div class="mini"><span class="tip" tabindex="0">Cognitive mode<span class="pop">Which of three response registers the output uses — name the syndrome, find its cause, or confirm a known one. Here the syndrome is clear, so the output is scoped to the discriminators that separate the causes.</span></span></div>
     <div class="mode">Etiologic discrimination</div>
     <div class="mini">Load-bearing facts</div>
     <ul class="facts">
@@ -190,14 +190,14 @@ Cultures — blood, urine and throat: no pathogenic organisms isolated.</div>
 
   <div class="seclabel">Next step</div>
   <div class="ns-card">
-    <p class="ns-intro"><span class="tip" tabindex="0" style="font-style:normal">The decision tree<span class="pop">The single highest-yield move, what each result would mean, and what to do then — the "what would change the probability" made explicit, plus the test that's deliberately deferred and the safety floor.</span></span> — a severe, acute febrile illness with multi-organ involvement (hepatic, renal, hematologic) and the highly specific finding of conjunctival suffusion, which strongly points toward leptospirosis. This is a confirm-and-treat phase.</p>
+    <p class="ns-intro"><span class="tip" tabindex="0" style="font-style:normal">The decision tree<span class="pop">The single highest-yield move, what each result would mean, and what to do then — the "what would change the probability" made explicit, plus the test held back for now and the safety floor.</span></span> — a severe, acute febrile illness with multi-organ involvement (hepatic, renal, hematologic) and the highly specific finding of conjunctival suffusion, which strongly points toward leptospirosis. This is a confirm-and-treat phase.</p>
 
     <div class="rank">
       <div class="rh"><b>Rank 1</b> &nbsp;<span class="disc"><span class="tip" tabindex="0">discriminates<span class="pop">The candidates this one move would help separate — the move is chosen because it cuts across several at once, not just the leader.</span></span>: <span class="e">Leptospirosis · Rickettsial diseases · Severe malaria</span></span></div>
       <div class="mvt">Order PCR for Leptospira (whole blood) and initiate empiric treatment with IV penicillin or ceftriaxone.</div>
       <div class="rat">PCR on whole blood is the most useful test in the first week of illness; empiric penicillin/ceftriaxone covers the treatable spirochetal and bacterial causes while it returns — in severe suspected disease, clinical suspicion drives treatment before laboratory confirmation.</div>
       <div class="gbox">
-        <div class="gt"><span class="tip" tabindex="0" style="border-bottom:none"><span class="ck">✓ corpus-grounded</span><span class="pop">This recommendation is drawn from the literature and carries the <b>verbatim source</b> below — your point that justification is citable even when the initial pattern-match isn't.</span></span> · Leptospirosis</div>
+        <div class="gt"><span class="tip" tabindex="0" style="border-bottom:none"><span class="ck">✓ corpus-grounded</span><span class="pop">This recommendation is drawn from the literature and carries the <b>verbatim source</b> below — your point that the justifying evidence is citable even where the initial naming isn't.</span></span> · Leptospirosis</div>
         <div class="gm">PCR analysis of whole blood, collected in the first week of illness.</div>
         <div class="gq">"During early disease, polymerase chain reaction (PCR) analysis of whole blood (collected in the first week of illness) … can be helpful for leptospirosis."</div>
       </div>
@@ -217,7 +217,7 @@ Cultures — blood, urine and throat: no pathogenic organisms isolated.</div>
       </div>
     </div>
 
-    <div class="dndy"><span class="tip" tabindex="0" style="border-bottom:none"><b>Do not do yet</b><span class="pop">Tests deliberately deferred — the engine guards against the overtesting you and Grubenhoff both flagged by saying what <b>not</b> to order yet, and why.</span></span> — Microscopic Agglutination Test (MAT): the antibody response is not yet reliable this early; send paired sera later.</div>
+    <div class="dndy"><span class="tip" tabindex="0" style="border-bottom:none"><b>Do not do yet</b><span class="pop">Tests held back for now — the engine flags what <b>not</b> to order yet, and why, guarding against the overtesting you and Grubenhoff both flagged.</span></span> — Microscopic Agglutination Test (MAT): the antibody response is not yet reliable this early; send paired sera later.</div>
 
     <div class="dndy"><b>If all moves negative</b> — re-evaluate for rickettsial disease (scrub typhus, RMSF) via serology or PCR, and confirm malaria is excluded by thick and thin blood smears.</div>
 
@@ -243,9 +243,9 @@ Cultures — blood, urine and throat: no pathogenic organisms isolated.</div>
 
   <div class="cand lead">
     <div class="ch"><span class="num">#1</span><span class="nm">Leptospirosis (Weil's disease)</span>
-      <span class="tip pr" tabindex="0" style="border-bottom:none">leading<span class="pop">Relative likelihood across the differential — a <b>calibrated read</b>, not a commitment. "What would move this" is answered by the discriminating test below.</span></span>
+      <span class="tip pr" tabindex="0" style="border-bottom:none">leading<span class="pop">Relative likelihood across the differential — a <b>calibrated estimate</b>, not a commitment. "What would move this" is answered by the discriminating test below.</span></span>
       <span class="band">supported</span>
-      <span class="tip gr" tabindex="0" style="border-bottom:none">✓ grounded<span class="pop">Where a claim is drawn from the literature it carries a <b>source you can open</b>. Pattern-recognition claims don't — the engine is honest about what is and isn't citable, exactly your point.</span></span>
+      <span class="tip gr" tabindex="0" style="border-bottom:none">✓ grounded<span class="pop">Where a claim is drawn from the literature it carries a <b>source you can open</b>; claims not found in the corpus carry none and are marked as such — what is and isn't citable is shown explicitly, exactly your point.</span></span>
     </div>
     <div class="ln"><span class="tip tri" tabindex="0">▲ fits typically<span class="pop">The findings this diagnosis explains in the expected, typical way — the supporting evidence.</span></span> <span class="lbl">:</span> rural exposure · bilateral conjunctival suffusion · calf-muscle tenderness · hepatosplenomegaly · hepatic dysfunction · coagulopathy</div>
     <div class="ln"><span class="tip dn" tabindex="0">▼ argues against<span class="pop">Findings present that don't fit, or features the diagnosis <b>should</b> produce but that are absent — the evidence that lowers it.</span></span> normal platelet count and creatinine (severe leptospirosis usually brings thrombocytopenia and renal injury)</div>
@@ -255,7 +255,7 @@ Cultures — blood, urine and throat: no pathogenic organisms isolated.</div>
   <div class="cand">
     <div class="ch"><span class="num">#2</span><span class="nm">Scrub typhus</span><span class="band">supported</span><span class="gr">✓ grounded</span></div>
     <div class="ln"><span class="tri">▲ fits typically</span> <span class="lbl">:</span> rural exposure · fever · rash · hepatosplenomegaly · transaminitis</div>
-    <div class="ln"><span class="tip di" tabindex="0">◆ atypical (high-information)<span class="pop">Present-but-unusual — or expected-but-absent — features for this diagnosis. These are <b>diagnostic gold</b>: the findings that separate an expert read from pattern-matching, and the engine never discounts them.</span></span> <span class="lbl">:</span> no eschar on a full skin survey (the classic finding, absent here — lowers but does not exclude it)</div>
+    <div class="ln"><span class="tip di" tabindex="0">◆ atypical (high-information)<span class="pop">Present-but-unusual — or expected-but-absent — features for this diagnosis. These are the <b>highest-information findings</b> — the ones that distinguish the correct diagnosis from a superficial match — weighted as such, not discounted.</span></span> <span class="lbl">:</span> no eschar on a full skin survey (the classic finding, absent here — lowers but does not exclude it)</div>
     <div class="kept">kept open — the discriminating test is not yet done: scrub typhus IgM ELISA</div>
   </div>
 
@@ -275,7 +275,7 @@ Cultures — blood, urine and throat: no pathogenic organisms isolated.</div>
   <div class="cand">
     <div class="ch"><span class="num">·</span><span class="nm">Toxic shock syndrome</span><span class="lbl" style="font-size:12px">— the referring diagnosis</span><span class="band" style="background:#fce8e8;color:var(--danger)">argued against</span></div>
     <div class="ln"><span class="dn">▼ argues against</span> a normal platelet count (192,000) is incompatible with the CDC criterion (≤100,000), and a normal creatinine (0.9) with the renal-involvement criterion; no bacterial focus identified.</div>
-    <div class="kept" style="font-style:normal;color:var(--text-muted)">GusEngine engages the working diagnosis on its own published criteria rather than ignoring it.</div>
+    <div class="kept" style="font-style:normal;color:var(--text-muted)">GusEngine tests the working diagnosis against its own published criteria rather than skipping it.</div>
   </div>
 
   <div class="confirm">
