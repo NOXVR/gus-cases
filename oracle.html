@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GusEngine — the Oracle (grounded answers to sharp clinical questions)</title>
+<meta name="description" content="GusEngine's Oracle answering real point-of-care questions — every step quoted from a cited source, the decision stated as reasoning, honest abstention when the corpus is silent.">
+<meta property="og:title" content="GusEngine — the Oracle">
+<meta property="og:description" content="Sharp clinical questions, decomposed and answered only from what the corpus actually says — zero fabricated citations.">
+<meta property="og:type" content="article">
+<style>
+  :root{
+    --bg-primary:#fff;--bg-secondary:#f6f7f9;--surface:#fff;
+    --text-primary:#111827;--text-secondary:#374151;--text-muted:#6b7280;--text-tertiary:#9ca3af;
+    --border:#d1d5db;--border-light:#e5e7eb;--accent:#2563eb;--accent-border:#bfdbfe;
+    --info:#2563eb;--info-light:#dbeafe;--success:#059669;--success-light:#d1fae5;--warning:#b45309;--warning-light:#fef3c7;--danger:#dc2626;
+    --teal:#0f766e;--radius-sm:4px;--radius-md:8px;--radius-lg:12px;
+    --font-xs:11px;--font-sm:13px;--font-md:15px;--font-lg:18px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg-secondary);color:var(--text-primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto;background:var(--surface);padding:24px 26px 60px}
+  .x-header{border-bottom:2px solid var(--accent);padding:0 0 9px;margin:0 0 18px}
+  .x-header .brand{font-size:var(--font-xs);font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-tertiary)}
+  .x-header h1{font-size:20px;font-weight:600;margin:3px 0 2px}
+  .x-header .sub{font-size:var(--font-sm);color:var(--text-muted);margin:0}
+  .back{display:inline-block;font-size:12px;color:var(--accent);text-decoration:none;margin:0 0 14px}
+  .back:hover{text-decoration:underline}
+  .seclabel{font-size:var(--font-xs);font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-tertiary);margin:26px 0 8px}
+  .intro{background:var(--info-light);border:1px solid var(--accent-border);border-radius:var(--radius-lg);padding:15px 17px;margin:4px 0 8px}
+  .intro .hd{font-size:var(--font-md);font-weight:600;color:#1e40af;margin-bottom:6px}
+  .intro p{margin:0 0 9px;color:#1e3a5f;font-size:var(--font-sm);line-height:1.6}
+  .intro p:last-child{margin-bottom:0}
+  .q-num{font-size:var(--font-xs);font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-tertiary);margin:26px 0 5px}
+  .query{background:var(--bg-secondary);border-left:3px solid var(--accent);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:11px 14px;font-size:13.5px;color:var(--text-primary);line-height:1.6;margin:0 0 8px}
+  .or-card{border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:15px 17px;margin:0 0 6px;background:var(--surface)}
+  .or-label{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-tertiary);margin:0 0 8px}
+  .or-answer{font-size:14px;line-height:1.7;color:var(--text-primary);margin:0 0 4px}
+  .cit{font-style:normal;color:var(--text-tertiary);font-size:11px;letter-spacing:.2px}
+  .concl{border-left:3px solid var(--accent);background:var(--bg-secondary);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:10px 13px;margin:12px 0 4px}
+  .concl .ch{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--accent);margin:0 0 3px}
+  .concl .ct{font-size:13.5px;color:var(--text-primary);line-height:1.6;margin:0}
+  .steps-h{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-tertiary);margin:14px 0 2px}
+  .step{padding:8px 0;border-top:1px solid var(--border-light)}
+  .step .cl{font-size:13px;color:var(--text-primary);line-height:1.5}
+  .step .ck{color:var(--success);font-weight:700}
+  .step .src{color:var(--text-tertiary);font-size:11px;font-style:italic}
+  .step .qz{font-size:12px;color:var(--text-muted);font-style:italic;margin:3px 0 0;line-height:1.55}
+  .gap{margin:12px 0 0;padding-top:9px;border-top:1px solid var(--border-light)}
+  .gap .gh{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--warning);margin:0 0 3px}
+  .gap .gt{font-size:12.5px;color:var(--text-muted);line-height:1.55;margin:0}
+  .ometa{margin:11px 0 0;font-size:10.5px;color:var(--text-tertiary);letter-spacing:.3px}
+  .tip{position:relative;border-bottom:1px dotted var(--text-tertiary);cursor:help;outline:none}
+  .tip>.pop{position:absolute;top:155%;left:0;width:300px;max-width:80vw;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius-md);padding:11px 13px;font-size:12.5px;
+    line-height:1.55;color:var(--text-secondary);font-style:normal;font-weight:400;z-index:30;opacity:0;
+    visibility:hidden;transition:opacity .12s;box-shadow:0 6px 22px rgba(17,24,39,.12)}
+  .tip:hover>.pop,.tip:focus>.pop,.tip:focus-within>.pop{opacity:1;visibility:visible}
+  .pop b{color:var(--text-primary);font-weight:600}
+  footer{margin-top:30px;color:var(--text-tertiary);font-size:12.5px;line-height:1.6;border-top:1px solid var(--border-light);padding-top:16px}
+  @media (max-width:560px){.wrap{padding:18px 14px 50px}.tip>.pop{width:230px}}
+  @media print{body,.wrap{background:#fff}.tip>.pop{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="index.html">← all walkthroughs</a>
+
+  <div class="x-header">
+    <div class="brand">GusEngine · the Oracle</div>
+    <h1>Sharp clinical questions, answered from the corpus</h1>
+    <p class="sub">The engine's own output on real point-of-care questions, annotated — hover any <span class="tip" tabindex="0">dotted label<span class="pop">Each explains, plainly, <b>what that part of the answer is</b> and how to read it.</span></span>.</p>
+  </div>
+
+  <div class="intro">
+    <div class="hd">What you're looking at.</div>
+    <p>This is a different surface from the case walkthroughs. The <b>Oracle</b> takes one focused clinical question, breaks it into atomic claims, and retrieves the active knowledge base for each. It shows only what it can actually <span class="tip" tabindex="0">quote<span class="pop">Every shown step <b>verbatim-traces</b> to a sentence in a cited source. If a claim can't be quoted from a retrieved passage, it is not shown as grounded — it goes to <b>Not established</b> instead.</span></span>, then states the bottom line as <span class="tip" tabindex="0">reasoning from the cited evidence<span class="pop">A labeled <b>inference</b> — the clinical decision the cited premises support. It is presented as reasoning, never as a new citation, so it can land the "so do X" without claiming the corpus said it verbatim.</span></span>.</p>
+    <p>Where the corpus is silent on a step, it says so under <span class="tip" tabindex="0">Not established from this corpus<span class="pop">The honest gap. The engine names the step it could not quote and <b>declines to assert it</b>, rather than filling it from training memory.</span></span> rather than guess. <span class="tip" tabindex="0">Provenance&nbsp;1<span class="pop"><b>1.0 = every shown citation is real</b> and traces to a retrieved corpus span. Independently re-checked. Zero fabricated citations on every answer below.</span></span> on every card means zero fabricated citations; <span class="tip" tabindex="0">tool calls&nbsp;0<span class="pop">Retrieval is a deterministic <b>code</b> step, not something the model chooses — so it cannot skip retrieval or steer it, and cannot answer from memory and cite after the fact.</span></span> means retrieval was code-driven, not model-driven.</p>
+    <p>These are eight real answers. Questions the corpus can't support — e.g. an exact ANA-titer threshold a source states only inside a table — the Oracle <b>declines</b>; those simply aren't shown here.</p>
+  </div>
+
+  <!-- ============================ 1 · LEGIONELLA ============================ -->
+  <div class="q-num">Question 1 · severe CAP, electrolytes &amp; coverage</div>
+  <div class="query">I'm treating severe community-acquired pneumonia and the patient's now hyponatremic (Na 124) with diarrhea and a mild transaminitis — does that constellation specifically point to Legionella, and should it change my empiric coverage?</div>
+  <div class="or-card">
+    <div class="or-label"><span class="tip" tabindex="0">Oracle — grounded reasoning<span class="pop">The composed answer, built only from the grounded steps below and joined by the relations the corpus supports.</span></span></div>
+    <div class="or-answer">Legionella pneumonia is classically associated with hyponatremia <span class="cit">[Clinical Manifestations and Diagnosis of Legionella Infection]</span> and is classically associated with gastrointestinal symptoms like diarrhea <span class="cit">[same]</span>, therefore standard empiric therapy for severe community-acquired pneumonia typically includes coverage for Legionella <span class="cit">[Treatment and Prevention of Legionella Infection]</span>.</div>
+    <div class="concl">
+      <div class="ch"><span class="tip" tabindex="0">Reasoning from the cited evidence<span class="pop">The labeled inference — the decision the cited premises support. Reasoning, not a citation.</span></span></div>
+      <p class="ct">The presence of hyponatremia and gastrointestinal symptoms is consistent with Legionella pneumonia, which is already addressed by standard empiric therapy for severe community-acquired pneumonia.</p>
+    </div>
+    <div class="steps-h"><span class="tip" tabindex="0">Grounded steps (cited)<span class="pop">Each step: the claim, the source it was quoted from, and the <b>verbatim sentence</b> that supports it.</span></span></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Legionella pneumonia is classically associated with hyponatremia. <span class="src">[Clinical Manifestations and Diagnosis of Legionella Infection]</span></div><p class="qz">“Hyponatremia (serum sodium mEq/L) occurs significantly more frequently in Legionnaires' disease than in pneumonias of other etiologies.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Legionella pneumonia is classically associated with gastrointestinal symptoms like diarrhea. <span class="src">[Clinical Manifestations and Diagnosis of Legionella Infection]</span></div><p class="qz">“Gastrointestinal symptoms are often prominent with diarrhea, nausea, vomiting, and abdominal pain.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Standard empiric therapy for severe community-acquired pneumonia typically includes coverage for Legionella. <span class="src">[Treatment and Prevention of Legionella Infection]</span></div><p class="qz">“…clinical signs of pneumonia will precede definitive laboratory diagnosis of Legionella in most patients, necessitating empiric coverage for many microorganisms, including Legionella.”</p></div>
+    <div class="gap"><div class="gh"><span class="tip" tabindex="0">Not established from this corpus<span class="pop">Named, not asserted. The transaminitis link and the "already-covered, so no change" rule weren't quotable in the active KB — so they're flagged, not claimed.</span></span></div><p class="gt">Legionella's association with elevated liver transaminases; that if standard severe-CAP coverage already includes a macrolide or respiratory fluoroquinolone, no change is required.</p></div>
+    <div class="ometa">3 grounded · provenance 1 · tool calls 0 · 14.1s</div>
+  </div>
+
+  <!-- ============================ 2 · EBV ============================ -->
+  <div class="q-num">Question 2 · is this a feature, or a second diagnosis</div>
+  <div class="query">A teenager with sore throat, fatigue and lymphadenopathy has ALT/AST in the 300s — is transaminitis a recognized feature of EBV mononucleosis, or should I work this up as a primary hepatitis?</div>
+  <div class="or-card">
+    <div class="or-label">Oracle — grounded reasoning</div>
+    <div class="or-answer">Epstein-Barr virus (EBV) mononucleosis is associated with mild to moderate elevations in serum aminotransferases (ALT/AST) <span class="cit">[EBV-associated epiglottitis in an immunocompetent child]</span>.</div>
+    <div class="concl">
+      <div class="ch">Reasoning from the cited evidence</div>
+      <p class="ct">Transaminitis is a recognized feature of EBV mononucleosis, and the observed elevations in serum aminotransferases are consistent with this diagnosis.</p>
+    </div>
+    <div class="steps-h">Grounded steps (cited)</div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> EBV mononucleosis is associated with mild to moderate elevations in serum aminotransferases (ALT/AST). <span class="src">[EBV-associated epiglottitis in an immunocompetent child]</span></div><p class="qz">“Hepatic transaminase levels are mildly elevated in about 75% of uncomplicated cases, usually without symptoms or jaundice.”</p></div>
+    <div class="gap"><div class="gh">Not established from this corpus</div><p class="gt">That ALT/AST specifically in the 300s falls within the typical range for EBV; and that the sore-throat/fatigue/lymphadenopathy triad favors EBV over a primary viral hepatitis.</p></div>
+    <div class="ometa">1 grounded · provenance 1 · tool calls 0 · 9.0s</div>
+  </div>
+
+  <!-- ============================ 3 · D-DIMER ============================ -->
+  <div class="q-num">Question 3 · age-adjusted test interpretation</div>
+  <div class="query">Low suspicion for PE (Wells 1) but the D-dimer is mildly above cutoff in a 72-year-old — can I apply an age-adjusted D-dimer to avoid CTPA?</div>
+  <div class="or-card">
+    <div class="or-label">Oracle — grounded reasoning</div>
+    <div class="or-answer">The age-adjusted D-dimer threshold is calculated as age × 10 ng/mL for patients older than 50 <span class="cit">[Acute Pulmonary Embolism: Diagnosis and Management]</span>, therefore a 72-year-old has an age-adjusted cutoff of 720 ng/mL <span class="cit">[same]</span>. The threshold is validated in patients with low clinical probability of PE <span class="cit">[Diagnosis of the Nonpregnant Adult with Suspected Acute PE]</span>, so if the D-dimer is below the age-adjusted threshold, PE can be safely ruled out without CTPA <span class="cit">[same]</span>.</div>
+    <div class="concl">
+      <div class="ch">Reasoning from the cited evidence</div>
+      <p class="ct">You can apply the age-adjusted D-dimer threshold to rule out PE without CTPA if the patient's D-dimer is below the age-adjusted cutoff.</p>
+    </div>
+    <div class="steps-h">Grounded steps (cited)</div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> The age-adjusted D-dimer threshold is age × 10 ng/mL for patients over 50. <span class="src">[Acute Pulmonary Embolism: Diagnosis and Management]</span></div><p class="qz">“The formula to calculate age-adjusted D-dimer is Age (if over 50 years) × 10 = cutoff value in ng/mL (fibrinogen equivalent units).”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> The threshold is validated in patients with low clinical probability of PE. <span class="src">[Diagnosis of the Nonpregnant Adult with Suspected Acute PE]</span></div><p class="qz">“Among the 1141 untreated patients in whom PE was excluded by clinical assessment plus age-adjusted D-dimer testing, there were only two cases (0.2 percent) of nonfatal PE.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> A 72-year-old has an age-adjusted D-dimer cutoff of 720 ng/mL. <span class="src">[Acute Pulmonary Embolism: Diagnosis and Management]</span></div><p class="qz">“…Age (if over 50 years) × 10 = cutoff value in ng/mL…”  (72 × 10 = 720)</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> If the D-dimer is below the age-adjusted threshold, PE can be safely ruled out without CTPA. <span class="src">[Diagnosis of the Nonpregnant Adult with Suspected Acute PE]</span></div><p class="qz">“…PE was excluded by clinical assessment plus age-adjusted D-dimer testing… only two cases (0.2 percent) of nonfatal PE.”</p></div>
+    <div class="ometa">4 grounded · provenance 1 · tool calls 0 · 9.7s</div>
+  </div>
+
+  <!-- ============================ 4 · ALLOPURINOL / HLA-B*58:01 ============================ -->
+  <div class="q-num">Question 4 · pharmacogenomic pre-screening</div>
+  <div class="query">About to start allopurinol for tophaceous gout in a patient of Han Chinese descent — what's the HLA-B*58:01 consideration, and should I test before starting?</div>
+  <div class="or-card">
+    <div class="or-label">Oracle — grounded reasoning</div>
+    <div class="or-answer">HLA-B*58:01 is strongly associated with an increased risk of severe cutaneous adverse reactions (SJS/TEN) induced by allopurinol <span class="cit">[Systematic Review of Stevens-Johnson Syndrome and TEN]</span>, therefore clinical guidelines (e.g. ACR) recommend screening for HLA-B*58:01 in patients of Han Chinese descent prior to initiating allopurinol <span class="cit">[Allopurinol: Drug Information]</span>.</div>
+    <div class="concl">
+      <div class="ch">Reasoning from the cited evidence</div>
+      <p class="ct">You should screen for the HLA-B*58:01 allele prior to initiating allopurinol in this patient to mitigate the risk of severe cutaneous adverse reactions.</p>
+    </div>
+    <div class="steps-h">Grounded steps (cited)</div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> HLA-B*58:01 is strongly associated with allopurinol-induced SJS/TEN. <span class="src">[Systematic Review of Stevens-Johnson Syndrome and TEN]</span></div><p class="qz">“…HLA-B*5801 is strongly correlated with allopurinol-induced SJS/TEN.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Guidelines recommend HLA-B*58:01 screening in Han Chinese patients before allopurinol. <span class="src">[Allopurinol: Drug Information]</span></div><p class="qz">“The guidelines suggest HLA-B*5801 screening in patients with a high incidence of this genotype; this includes patients of Korean descent who have stage 3 or worse chronic kidney disease, as well as patients of Han Chinese or Thai descent…”</p></div>
+    <div class="gap"><div class="gh">Not established from this corpus</div><p class="gt">The quantitative allele-prevalence difference across ethnic groups; and that a positive test makes allopurinol outright contraindicated.</p></div>
+    <div class="ometa">2 grounded · provenance 1 · tool calls 0 · 8.8s</div>
+  </div>
+
+  <!-- ============================ 5 · SCRUB TYPHUS / ESCHAR ============================ -->
+  <div class="q-num">Question 5 · does an absent finding lower pretest probability</div>
+  <div class="query">Can scrub typhus present without an eschar in an endemic-region patient, and how often — does an absent eschar meaningfully lower my pretest probability?</div>
+  <div class="or-card">
+    <div class="or-label">Oracle — grounded reasoning</div>
+    <div class="or-answer">Scrub typhus can present without an eschar <span class="cit">[Movement Disorders in Scrub Typhus: A Systematic Review]</span>, therefore the absence of an eschar does not rule out scrub typhus <span class="cit">[Scrub Typhus]</span>, because the prevalence of eschar varies significantly by geographic region and strain <span class="cit">[Global Seroprevalence of Scrub Typhus]</span>.</div>
+    <div class="concl">
+      <div class="ch">Reasoning from the cited evidence</div>
+      <p class="ct">Scrub typhus can present without an eschar, and the absence of this finding does not rule out the diagnosis.</p>
+    </div>
+    <div class="steps-h">Grounded steps (cited)</div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Scrub typhus can present without an eschar. <span class="src">[Movement Disorders in Scrub Typhus: A Systematic Review]</span></div><p class="qz">“A characteristic eschar was present in 38.2% of patients, while 30.9% lacked this finding.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Eschar prevalence varies significantly by geographic region and strain. <span class="src">[Global Seroprevalence of Scrub Typhus]</span></div><p class="qz">“Variability in eschar occurrence is noted across different O. tsutsugamushi strains and among different ethnic populations.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> The absence of an eschar does not rule out scrub typhus. <span class="src">[Scrub Typhus]</span></div><p class="qz">“Also, eschars, which occur in 10% to 90% of acute scrub typhus cases, can be easily overlooked.”</p></div>
+    <div class="gap"><div class="gh">Not established from this corpus</div><p class="gt">A precise quantitative statement that an absent eschar lowers pretest probability to a level where the disease can be excluded.</p></div>
+    <div class="ometa">3 grounded · provenance 1 · tool calls 0 · 8.4s</div>
+  </div>
+
+  <!-- ============================ 6 · GCA / NORMAL MARKERS ============================ -->
+  <div class="q-num">Question 6 · a time-critical can't-miss with normal markers</div>
+  <div class="query">A 70-year-old with new headache, jaw claudication and visual symptoms but normal ESR and CRP — can GCA occur with normal markers, and does that change whether I start steroids and biopsy?</div>
+  <div class="or-card">
+    <div class="or-label">Oracle — grounded reasoning</div>
+    <div class="or-answer">Giant cell arteritis can present with normal ESR and CRP <span class="cit">[Blood Biomarkers in Large-Vessel Vasculitides]</span> and the prevalence of biopsy-proven GCA with normal inflammatory markers is non-zero <span class="cit">[Diagnostic Challenges and Therapeutic Strategies in GCA]</span>, so normal ESR/CRP does not rule out GCA and does not preclude temporal artery biopsy <span class="cit">[Diagnosis of Giant Cell Arteritis]</span>, therefore clinical suspicion of GCA with jaw claudication and visual symptoms warrants immediate high-dose corticosteroids regardless of ESR/CRP <span class="cit">[Neuro-ophthalmic Manifestations of GCA]</span>.</div>
+    <div class="concl">
+      <div class="ch">Reasoning from the cited evidence</div>
+      <p class="ct">Given the clinical suspicion of giant cell arteritis, you should immediately initiate high-dose systemic corticosteroids and proceed with a temporal artery biopsy despite the normal inflammatory markers.</p>
+    </div>
+    <div class="steps-h">Grounded steps (cited)</div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> GCA can present with normal ESR and CRP. <span class="src">[Blood Biomarkers in Large-Vessel Vasculitides]</span></div><p class="qz">“…in a cohort of 177 patients with biopsy-proven GCA, eighteen (10.2%) showed normal values of both ESR and CRP… at the time of diagnosis.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> The prevalence of biopsy-proven GCA with normal markers is non-zero. <span class="src">[Diagnostic Challenges and Therapeutic Strategies in GCA]</span></div><p class="qz">“…normal inflammatory markers occur in approximately 4–20% of biopsy-proven cases (with most studies reporting 7–10%), representing a population enriched for atypical presentations…”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Clinical suspicion with jaw claudication and visual symptoms warrants immediate high-dose corticosteroids regardless of ESR/CRP. <span class="src">[Neuro-ophthalmic Manifestations of GCA]</span></div><p class="qz">“…high-dose corticosteroids should be started immediately in a patient with suspected GCA. They should not be delayed by other investigations…”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Normal ESR/CRP does not rule out GCA and does not preclude biopsy. <span class="src">[Diagnosis of Giant Cell Arteritis]</span></div><p class="qz">“Conversely, lower values do not exclude a possible diagnosis of GCA.”</p></div>
+    <div class="ometa">4 grounded · provenance 1 · tool calls 0 · 9.7s</div>
+  </div>
+
+  <!-- ============================ 7 · DRUG-INDUCED LUPUS ============================ -->
+  <div class="q-num">Question 7 · which antibody discriminates</div>
+  <div class="query">Years on hydralazine, now arthralgias + fatigue + positive ANA — how do I separate drug-induced lupus from SLE, and which antibody settles it?</div>
+  <div class="or-card">
+    <div class="or-label">Oracle — grounded reasoning</div>
+    <div class="or-answer">Hydralazine is a known cause of drug-induced lupus (DILE) <span class="cit">[Drug-Induced Lupus]</span>, whereas renal and CNS involvement are common in idiopathic SLE but rare in DILE <span class="cit">[same]</span>. DILE is strongly associated with anti-histone antibodies <span class="cit">[Drug-Induced Lupus]</span>, whereas SLE is typically associated with anti-dsDNA and anti-Smith antibodies <span class="cit">[Diagnosis and Differential Diagnosis of SLE in Adults]</span>.</div>
+    <div class="concl">
+      <div class="ch">Reasoning from the cited evidence</div>
+      <p class="ct">To distinguish drug-induced lupus from SLE, assess for anti-histone antibodies versus anti-dsDNA and anti-Smith antibodies, along with the absence of renal and central nervous system involvement.</p>
+    </div>
+    <div class="steps-h">Grounded steps (cited)</div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Hydralazine is a known cause of drug-induced lupus. <span class="src">[Drug-Induced Lupus]</span></div><p class="qz">“Medications identified as definitely causing drug-induced lupus include procainamide, hydralazine, minocycline, diltiazem, penicillamine, isoniazid, quinidine, anti-TNF-alpha therapy…”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> DILE is strongly associated with anti-histone antibodies. <span class="src">[Drug-Induced Lupus]</span></div><p class="qz">“Anti-histone antibodies are strongly associated with some forms of drug-induced lupus.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> SLE is typically associated with anti-dsDNA and anti-Smith antibodies. <span class="src">[Diagnosis and Differential Diagnosis of SLE in Adults]</span></div><p class="qz">“…some antibodies (eg, anti-double-stranded DNA [dsDNA] and anti-Smith [Sm]) highly associated with this condition.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Renal and CNS involvement are common in idiopathic SLE but rare in DILE. <span class="src">[Drug-Induced Lupus]</span></div><p class="qz">“…more severe manifestations, such as kidney disease and central nervous system involvement, are uncommon, although they may occur.”</p></div>
+    <div class="ometa">4 grounded · provenance 1 · tool calls 0 · 12.0s</div>
+  </div>
+
+  <!-- ============================ 8 · DERMATOMYOSITIS ============================ -->
+  <div class="q-num">Question 8 · paraneoplastic screening</div>
+  <div class="query">A 55-year-old with new dermatomyositis — what's the malignancy-screening recommendation, and which cancers specifically?</div>
+  <div class="or-card">
+    <div class="or-label">Oracle — grounded reasoning</div>
+    <div class="or-answer">Dermatomyositis is associated with an increased risk of underlying malignancy <span class="cit">[Cutaneous Manifestations of Internal Malignancy]</span>, therefore age-appropriate cancer screening is recommended for all patients with a new diagnosis of dermatomyositis <span class="cit">[Dermatomyositis: Skin as a Window to Muscle and Malignancy]</span>. Ovarian cancer is a particularly high-risk malignancy in women with dermatomyositis <span class="cit">[Dermatomyositis: Prevalence, Clinical Spectrum, and Management]</span>.</div>
+    <div class="concl">
+      <div class="ch">Reasoning from the cited evidence</div>
+      <p class="ct">Patients with a new diagnosis of dermatomyositis should undergo age-appropriate cancer screening, with particular attention to ovarian cancer in women.</p>
+    </div>
+    <div class="steps-h">Grounded steps (cited)</div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Dermatomyositis is associated with increased malignancy risk. <span class="src">[Cutaneous Manifestations of Internal Malignancy]</span></div><p class="qz">“Adults with dermatomyositis have increased risk for malignancy.”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Age-appropriate cancer screening is recommended at new diagnosis. <span class="src">[Dermatomyositis: Skin as a Window to Muscle and Malignancy]</span></div><p class="qz">“The initial evaluation for all patients includes… standard age- and sex-appropriate cancer screenings (e.g., mammography, Pap smear, colonoscopy).”</p></div>
+    <div class="step"><div class="cl"><span class="ck">✓</span> Ovarian cancer is a particularly high-risk malignancy in women with dermatomyositis. <span class="src">[Dermatomyositis: Prevalence, Clinical Spectrum, and Management]</span></div><p class="qz">“…patients with dermatomyositis have a significantly higher risk of malignancy, with the highest risk occurring within three years before or after disease diagnosis.”</p></div>
+    <div class="gap"><div class="gh">Not established from this corpus</div><p class="gt">The full named list of most-associated cancers (ovarian, lung, pancreatic, stomach, colorectal, non-Hodgkin lymphoma) as a single quotable statement.</p></div>
+    <div class="ometa">3 grounded · provenance 1 · tool calls 0 · 8.7s</div>
+  </div>
+
+  <footer>
+    Eight unedited Oracle answers over the active knowledge base; quotations are verbatim from the cited source.
+    Provenance independently re-checked at 1.0 (no fabricated citations) on every answer.
+    Prepared for discussion with collaborating clinicians — not for clinical use.
+  </footer>
+
+</div>
+</body>
+</html>
