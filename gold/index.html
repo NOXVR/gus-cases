@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GusEngine — annotated case walkthroughs</title>
+<meta name="description" content="GusEngine reasoning on real cases, annotated so each output explains itself.">
+<meta property="og:title" content="GusEngine — annotated case walkthroughs">
+<meta property="og:description" content="Real cases, reasoned end to end, with hover notes explaining what each output is and what it means.">
+<style>
+  :root{--bg:#f6f7f9;--surface:#fff;--ink:#111827;--muted:#6b7280;--faint:#9ca3af;--line:#e5e7eb;--accent:#2563eb;--accentbg:#dbeafe;--accent-border:#bfdbfe;--radius:12px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6}
+  .wrap{max-width:680px;margin:0 auto;padding:40px 24px 70px}
+  .brand{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--faint)}
+  h1{font-size:24px;font-weight:600;margin:5px 0 14px}
+  .intro{background:var(--accentbg);border:1px solid var(--accent-border);border-radius:var(--radius);padding:16px 18px;margin:0 0 22px}
+  .intro .hd{font-size:15px;font-weight:600;color:#1e40af;margin-bottom:6px}
+  .intro p{margin:0 0 10px;color:#1e3a5f;font-size:14px;line-height:1.55}
+  .maplist{list-style:none;margin:6px 0 0;padding:0}
+  .maplist li{padding:7px 0;border-top:1px solid #c3d9f5;font-size:14px;color:#1e3a5f;line-height:1.5}
+  .maplist li:first-child{border-top:none}
+  .maplist b{color:#1e3a5f;font-weight:600}
+  a.case{display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin:0 0 12px;transition:border-color .12s}
+  a.case:hover{border-color:var(--accent)}
+  .case .tag{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--accent)}
+  .case h2{font-size:17px;font-weight:600;margin:4px 0 4px;color:var(--ink)}
+  .case p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
+  .case .arrow{float:right;color:var(--accent);font-size:18px;margin-top:-26px}
+  footer{margin-top:28px;color:var(--faint);font-size:12.5px;line-height:1.6;border-top:1px solid var(--line);padding-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">GusEngine</div>
+  <h1>Annotated case walkthroughs</h1>
+
+  <div class="intro">
+    <div class="hd">Dr. Gold — following up on our conversation.</div>
+    <p>You raised whether the engine leans on a ground-truth anchor or on the load-bearing facts, and pressed on calibration — don't cry wolf, but don't close early either. Here is a real case in the engine's own output, with your points marked where they land. Open any page and hover the dotted text.</p>
+    <ul class="maplist">
+      <li><b>Load-bearing facts, not the ground-truth anchor</b> — the differential surfaces with no geographic anchor named in the case.</li>
+      <li><b>Calibrated probability — avoid Chicken Little, but don't over-close</b> — a flat, honest spread across the neighborhood rather than a forced #1.</li>
+      <li><b>What would refine the differential, and what confirms it</b> — the discriminating test, and what is held back to avoid overtesting.</li>
+      <li><b>A low-probability candidate isn't thrown away</b> when missing information is what keeps it open — the held-open neighborhood.</li>
+    </ul>
+  </div>
+
+  <a class="case" href="calibration.html">
+    <span class="arrow">→</span>
+    <div class="tag">Diagnostic reasoning · calibration</div>
+    <h2>Scrub typhus — undifferentiated zoonotic illness</h2>
+    <p>Surfaced at the top without any geographic anchor, on the clinical facts alone — with calibrated probabilities across a flat neighborhood, the test that separates them, and what is held back to avoid overtesting.</p>
+  </a>
+
+  <a class="case" href="grounded-answers.html">
+    <span class="arrow">→</span>
+    <div class="tag">Grounded answers</div>
+    <h2>Sharp clinical questions, answered from the corpus</h2>
+    <p>A different surface: eight focused point-of-care questions — several on when not to escalate testing — each decomposed, grounded to cited sources, and decided. Zero fabricated citations; it abstains when the corpus is silent.</p>
+  </a>
+
+  <footer>Prepared for discussion. Not for clinical use.</footer>
+</div>
+</body>
+</html>

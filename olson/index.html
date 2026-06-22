@@ -8,22 +8,25 @@
 <meta property="og:title" content="GusEngine — annotated case walkthroughs">
 <meta property="og:description" content="Real cases, reasoned end to end, with hover notes explaining what each output is and what it means.">
 <style>
-  :root{--bg:#f6f7f9;--surface:#fff;--ink:#111827;--muted:#6b7280;--faint:#9ca3af;--line:#e5e7eb;--accent:#2563eb;--accentbg:#dbeafe;--radius:12px}
+  :root{--bg:#f6f7f9;--surface:#fff;--ink:#111827;--muted:#6b7280;--faint:#9ca3af;--line:#e5e7eb;--accent:#2563eb;--accentbg:#dbeafe;--accent-border:#bfdbfe;--radius:12px}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6}
   .wrap{max-width:680px;margin:0 auto;padding:40px 24px 70px}
   .brand{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--faint)}
-  h1{font-size:24px;font-weight:600;margin:5px 0 6px}
-  .lede{color:var(--muted);font-size:15px;margin:0 0 26px;line-height:1.6}
-  .lede b{color:var(--ink);font-weight:600}
+  h1{font-size:24px;font-weight:600;margin:5px 0 14px}
+  .intro{background:var(--accentbg);border:1px solid var(--accent-border);border-radius:var(--radius);padding:16px 18px;margin:0 0 22px}
+  .intro .hd{font-size:15px;font-weight:600;color:#1e40af;margin-bottom:6px}
+  .intro p{margin:0 0 10px;color:#1e3a5f;font-size:14px;line-height:1.55}
+  .maplist{list-style:none;margin:6px 0 0;padding:0}
+  .maplist li{padding:7px 0;border-top:1px solid #c3d9f5;font-size:14px;color:#1e3a5f;line-height:1.5}
+  .maplist li:first-child{border-top:none}
+  .maplist b{color:#1e3a5f;font-weight:600}
   a.case{display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin:0 0 12px;transition:border-color .12s}
   a.case:hover{border-color:var(--accent)}
   .case .tag{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--accent)}
   .case h2{font-size:17px;font-weight:600;margin:4px 0 4px;color:var(--ink)}
   .case p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
   .case .arrow{float:right;color:var(--accent);font-size:18px;margin-top:-26px}
-  .soon{opacity:.55;border-style:dashed}
-  .soon .arrow{display:none}
   footer{margin-top:28px;color:var(--faint);font-size:12.5px;line-height:1.6;border-top:1px solid var(--line);padding-top:16px}
 </style>
 </head>
@@ -31,13 +34,23 @@
 <div class="wrap">
   <div class="brand">GusEngine</div>
   <h1>Annotated case walkthroughs</h1>
-  <p class="lede">Real cases run through the engine, in its own output, with <b>hover notes</b> on every label — so each page explains what the output is and what it means. Open any case and hover the dotted text.</p>
+
+  <div class="intro">
+    <div class="hd">Andrew — following up on our conversation.</div>
+    <p>You made several points about how diagnostic reasoning actually works. Rather than describe how the engine answers them, here are real cases in its own output, with your points marked where they land. Open any page and hover the dotted text.</p>
+    <ul class="maplist">
+      <li><b>Problem representation does the load-bearing work</b>, and the response should match the cognitive mode — the one-liner and mode line on the diagnostic case.</li>
+      <li><b>Atypicality is the gold, never discounted</b>; pattern recognition isn't citable, but justification is — the ◆ markers and the ✓ sources.</li>
+      <li><b>Information arrives serially</b>, and the machine should track the cadence — the same case fed one visit at a time.</li>
+      <li><b>Don't-miss is orthogonal to most-likely</b>, and it shouldn't tell you "it's this" — cannot-miss surfaced separately, a ranked read with no verdict.</li>
+    </ul>
+  </div>
 
   <a class="case" href="diagnostic.html">
     <span class="arrow">→</span>
     <div class="tag">Diagnostic reasoning</div>
     <h2>Pediatric febrile multisystem illness</h2>
-    <p>A 7-year-old referred as toxic shock — reasoned to a defended differential, with the physiologic reading, the discriminating next step, and the can't-miss surfaced separately.</p>
+    <p>A 7-year-old referred as toxic shock — reasoned to a defended differential: the one-liner and cognitive mode, atypical findings weighted as high-information, citable justification, and the can't-miss surfaced separately. No verdict — a ranked read.</p>
   </a>
 
   <a class="case" href="serial.html">
@@ -47,21 +60,14 @@
     <p>Three intake visits. Each one the engine reports what changed — what it raised, set aside, and is converging toward — carrying the unexplained forward as information arrives serially.</p>
   </a>
 
-  <a class="case" href="calibration.html">
-    <span class="arrow">→</span>
-    <div class="tag">Diagnostic reasoning · calibration</div>
-    <h2>Scrub typhus — undifferentiated zoonotic illness</h2>
-    <p>Surfaced at the top without any geographic anchor, on the clinical facts alone — with calibrated probabilities across a flat neighborhood and the test that separates them.</p>
-  </a>
-
   <a class="case" href="grounded-answers.html">
     <span class="arrow">→</span>
     <div class="tag">Grounded answers</div>
     <h2>Sharp clinical questions, answered from the corpus</h2>
-    <p>A different surface: eight focused point-of-care questions — Legionella coverage, age-adjusted D-dimer, GCA with normal markers, the antibody that separates drug-induced lupus from SLE — each decomposed, grounded to cited sources, and decided. Zero fabricated citations; it abstains when the corpus is silent.</p>
+    <p>A different surface: eight focused point-of-care questions — each decomposed, grounded to cited sources, and decided. Zero fabricated citations; it abstains when the corpus is silent.</p>
   </a>
 
-  <footer>Prepared for discussion with collaborating clinicians. Not for clinical use.</footer>
+  <footer>Prepared for discussion. Not for clinical use.</footer>
 </div>
 </body>
 </html>

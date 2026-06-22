@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GusEngine — case walkthrough (febrile multisystem illness)</title>
+<meta name="description" content="A pediatric case run through GusEngine, in the engine's own output, annotated so each section explains itself.">
+<meta property="og:title" content="GusEngine — annotated case walkthrough">
+<meta property="og:description" content="Pediatric febrile multisystem illness, reasoned end to end. Hover any dotted label for what that output means.">
+<meta property="og:type" content="article">
+<style>
+  :root{
+    --bg-primary:#fff;--bg-secondary:#f6f7f9;--bg-tertiary:#eef0f3;--surface:#fff;
+    --text-primary:#111827;--text-secondary:#374151;--text-muted:#6b7280;--text-tertiary:#9ca3af;
+    --border:#d1d5db;--border-light:#e5e7eb;--border-subtle:#f3f4f6;--accent:#2563eb;--accent-border:#bfdbfe;
+    --info:#2563eb;--info-light:#dbeafe;--success:#059669;--success-light:#d1fae5;--warning:#b45309;--warning-light:#fef3c7;--danger:#dc2626;
+    --teal:#0f766e;--purple:#6d28d9;
+    --radius-sm:4px;--radius-md:8px;--radius-lg:12px;
+    --font-xs:11px;--font-sm:13px;--font-md:15px;--font-lg:18px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg-secondary);color:var(--text-primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto;background:var(--surface);padding:24px 26px 60px}
+  .x-header{border-bottom:2px solid var(--accent);padding:0 0 9px;margin:0 0 18px}
+  .x-header .brand{font-size:var(--font-xs);font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-tertiary)}
+  .x-header h1{font-size:20px;font-weight:600;margin:3px 0 2px;color:var(--text-primary)}
+  .x-header .sub{font-size:var(--font-sm);color:var(--text-muted);margin:0}
+  .seclabel{font-size:var(--font-xs);font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-tertiary);margin:24px 0 8px}
+  .intro{background:var(--info-light);border:1px solid var(--accent-border);border-radius:var(--radius-lg);padding:15px 17px;margin:4px 0 6px}
+  .intro .hd{font-size:var(--font-md);font-weight:600;color:#1e40af;margin-bottom:6px}
+  .intro p{margin:0 0 9px;color:#1e3a5f;font-size:var(--font-sm);line-height:1.55}
+  .maplist{list-style:none;margin:6px 0 0;padding:0}
+  .maplist li{padding:6px 0;border-top:1px solid #c3d9f5;font-size:var(--font-sm);display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .maplist li:first-child{border-top:none}
+  .maplist .q{color:#1e3a5f;flex:1;min-width:200px}
+  .maplist a{color:var(--accent);text-decoration:none;white-space:nowrap}
+  .maplist a:hover{text-decoration:underline}
+  .pf-card{border:1px solid var(--accent);border-radius:var(--radius-lg);padding:15px 17px;margin:0 0 4px;background:var(--surface)}
+  .pf-head{display:flex;align-items:center;gap:9px;margin-bottom:11px;flex-wrap:wrap}
+  .pf-head .t{font-size:var(--font-sm);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--accent)}
+  .pf-head .meta{font-size:10px;letter-spacing:.4px;text-transform:uppercase;color:var(--text-tertiary)}
+  .oneliner{font-style:italic;font-size:var(--font-md);line-height:1.6;color:var(--text-primary);margin:0 0 12px}
+  .mini{font-size:var(--font-xs);font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-tertiary);margin:10px 0 4px}
+  .mode{font-size:var(--font-md);font-weight:600;color:var(--info)}
+  .facts{margin:2px 0 0;padding-left:18px;color:var(--text-secondary)}
+  .facts li{font-size:12.5px;margin:2px 0;line-height:1.45}
+  .sev{font-size:var(--font-sm);font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--warning);margin:22px 0 6px}
+  .dd-title{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:26px 0 9px}
+  .dd-title h2{font-size:var(--font-lg);font-weight:600;margin:0;color:var(--text-primary)}
+  .dd-title .cap{font-size:var(--font-sm);color:var(--text-muted)}
+  .banner{font-size:var(--font-sm);color:var(--text-muted);background:var(--bg-secondary);border-radius:var(--radius-md);padding:8px 12px;margin:0 0 12px}
+  .card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:14px 16px;margin:0 0 11px}
+  .phys .fz{font-size:13.5px;color:var(--text-primary);line-height:1.55;margin:0 0 4px}
+  .phys .src{font-size:12px;color:var(--text-tertiary);margin:0 0 11px}
+  .lb{font-size:13px;line-height:1.55;color:var(--text-secondary);margin:0 0 8px}
+  .lb .tri{color:var(--success);font-weight:700}
+  .lb b{color:var(--text-primary);font-weight:600}
+  .by{color:var(--teal)}
+  .cand{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:13px 15px;margin:0 0 10px}
+  .cand.lead{border-color:var(--accent-border)}
+  .ch{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:7px}
+  .ch .num{font-size:var(--font-xs);font-weight:700;color:var(--text-tertiary)}
+  .ch .nm{font-size:var(--font-md);font-weight:600;color:var(--text-primary)}
+  .ch .pr{font-size:var(--font-sm);font-weight:700;color:var(--info)}
+  .band{font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:var(--info-light);color:var(--info)}
+  .gr{font-size:var(--font-xs);color:var(--success)}
+  .ln{font-size:13px;line-height:1.55;color:var(--text-secondary);margin:3px 0}
+  .ln .tri{color:var(--success);font-weight:700}
+  .ln .dn{color:var(--danger);font-weight:700}
+  .ln .di{color:var(--warning);font-weight:700}
+  .ln b{color:var(--text-primary);font-weight:600}
+  .lbl{color:var(--text-muted)}
+  .kept{font-size:12.5px;font-style:italic;color:var(--text-tertiary);margin-top:5px}
+  .confirm{background:var(--bg-secondary);border-radius:var(--radius-lg);padding:13px 16px;margin:8px 0 0}
+  .confirm .mv{font-size:var(--font-sm);color:var(--text-primary);line-height:1.6}
+  .confirm .mv b{font-weight:600}
+  .confirm .bl{font-size:12.5px;color:var(--text-secondary);margin:3px 0;line-height:1.5}
+  .miss{font-size:13px;color:var(--danger);line-height:1.55;margin:9px 0 0}
+  footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--border-light);color:var(--text-tertiary);font-size:12px;line-height:1.6}
+  .fa-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:13px 16px;margin:0 0 4px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .pill-ok{font-size:11px;font-weight:600;color:var(--success);background:var(--success-light);padding:3px 10px;border-radius:12px;white-space:nowrap}
+  .ns-card{background:var(--bg-secondary);border-radius:var(--radius-lg);padding:15px 16px;margin:0 0 4px}
+  .ns-intro{font-style:italic;font-size:13.5px;color:var(--text-secondary);line-height:1.55;margin:0 0 13px}
+  .rank{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:13px 15px;margin:0 0 11px}
+  .rank .rh{font-size:var(--font-sm);margin-bottom:6px}
+  .rank .rh b{font-weight:700;color:var(--text-secondary);letter-spacing:.3px}
+  .rank .rh .disc{color:var(--text-muted)}
+  .rank .rh .e{color:var(--teal)}
+  .rank .mvt{font-size:var(--font-md);font-weight:600;color:var(--text-primary);line-height:1.4;margin:0 0 5px}
+  .rank .rat{font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0 0 9px}
+  .gbox{background:var(--bg-secondary);border-left:3px solid var(--success);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:9px 12px;margin:0 0 11px}
+  .gbox .gt{font-size:12.5px;color:var(--text-secondary);margin:0 0 3px}
+  .gbox .ck{color:var(--success);font-weight:600}
+  .gbox .gm{font-size:12.5px;color:var(--text-primary);margin:0 0 3px}
+  .gbox .gq{font-size:12px;font-style:italic;color:var(--text-muted);margin:0;line-height:1.5}
+  .ifgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ifcol{border:1px solid var(--border-light);border-radius:var(--radius-md);padding:10px 12px}
+  .ifcol .ifh{font-size:var(--font-xs);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--success);margin:0 0 6px}
+  .ifcol .f1{font-size:12.5px;color:var(--text-primary);margin:0 0 5px;line-height:1.45}
+  .ifcol .f2{font-size:12.5px;font-style:italic;color:var(--text-secondary);margin:0 0 5px;line-height:1.45}
+  .ifcol .f3{font-size:12.5px;font-weight:600;color:var(--text-primary);margin:0;line-height:1.45}
+  .dndy{font-size:12.5px;color:var(--text-secondary);margin:11px 0 0;line-height:1.5}
+  .dndy b{color:var(--text-primary);font-weight:600}
+  .safety{font-size:12.5px;color:var(--danger);background:#fdf1f1;border:1px solid #f3d4d4;border-radius:var(--radius-md);padding:9px 12px;margin:10px 0 0;line-height:1.5}
+  .query{background:var(--bg-secondary);border-left:3px solid var(--accent);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:12px 15px;font-size:12.5px;color:var(--text-primary);line-height:1.65;white-space:pre-wrap;margin:0 0 4px}
+  .tip{position:relative;border-bottom:1px dotted var(--text-tertiary);cursor:help;outline:none}
+  .tip>.pop{position:absolute;top:155%;left:0;width:300px;max-width:80vw;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius-md);padding:11px 13px;font-size:12.5px;
+    line-height:1.55;color:var(--text-secondary);font-style:normal;font-weight:400;z-index:30;opacity:0;
+    visibility:hidden;transition:opacity .12s;box-shadow:0 6px 22px rgba(17,24,39,.12)}
+  .tip:hover>.pop,.tip:focus>.pop,.tip:focus-within>.pop{opacity:1;visibility:visible}
+  .tip .mk{font-size:10px;color:var(--text-tertiary);vertical-align:1px;margin-left:2px}
+  .pop b{color:var(--text-primary);font-weight:600}
+  @media (max-width:560px){.wrap{padding:18px 14px 50px}.tip>.pop{width:230px}.ifgrid{grid-template-columns:1fr}}
+  @media print{body,.wrap{background:#fff}.tip>.pop{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a href="index.html" style="display:inline-block;text-decoration:none;color:var(--accent);font-size:12px;font-weight:600;margin:0 0 14px">← back</a>
+
+  <div class="x-header">
+    <div class="brand">GusEngine · case walkthrough</div>
+    <h1>A 7-year-old with a febrile multisystem illness</h1>
+    <p class="sub">The engine's own output, annotated — hover any <span class="tip" tabindex="0">dotted label<span class="pop">Like this. Each says, plainly, <b>what that output is</b> and <b>why it's there</b>, so the page explains itself.</span></span> for what it means.</p>
+  </div>
+
+  <div class="intro">
+    <div class="hd">How diagnostic reasoning shows up in the output.</div>
+    <p>Several points come up about how diagnostic reasoning actually works. Rather than describe how the engine addresses them, here is one case in its own output, with each marked where it lands:</p>
+    <ul class="maplist">
+      <li><span class="q">Problem representation does the load-bearing work</span><a href="#pf">the one-liner →</a></li>
+      <li><span class="q">The response should match the cognitive mode</span><a href="#pf">the mode line →</a></li>
+      <li><span class="q">Atypicality is the gold, never discounted</span><a href="#dd">the ◆ markers →</a></li>
+      <li><span class="q">Pattern recognition isn't citable; justification is</span><a href="#dd">the ✓ sources →</a></li>
+      <li><span class="q">Don't-miss is orthogonal to most-likely</span><a href="#miss">cannot-miss →</a></li>
+      <li><span class="q">It shouldn't tell you "it's this"</span><a href="#dd">no verdict, a ranked read →</a></li>
+    </ul>
+  </div>
+
+  <div class="seclabel"><span class="tip" tabindex="0">Case as submitted<span class="pop">The input exactly as a clinician would enter it. Everything below is GusEngine's — derived from this and nothing else.</span></span></div>
+  <div class="query">7-year-old boy. Referred to the Paediatric Intensive Care Unit.
+Presenting complaints: myalgia and a generalized rash.
+History of present illness: sudden onset of fever, headache, and vomiting, present for 2 days prior to admission.
+Referring (working) diagnosis: staphylococcal toxic shock syndrome.
+Treatment in progress at the time of referral: vancomycin.
+Residence: rural area. Prenatal, natal, postnatal, and family histories: unremarkable.
+
+Anthropometrics — body weight 19 kg (10th–25th pct); height 117.5 cm (25th pct).
+Vital signs — temperature 38.5°C; BP 82/60 mm Hg; HR 169; RR 27; GCS 11; capillary refill 3 s.
+Physical exam — diffuse erythema; intraoral bleeding; bilateral conjunctival suffusion; calf-muscle tenderness; hepatomegaly 3 cm and splenomegaly 2 cm below the costal margins.
+Hematology — WBC 12,540; neutrophils 11,490; lymphocytes 210; haemoglobin 11.7 g/dL; platelets 192,000.
+Venous blood gas — pH 7.33; PCO₂ 19.1; HCO₃ 10; lactate 2.4.
+Biochemistry — glucose 38; BUN 41.5; creatinine 0.9; uric acid 9.7; sodium 128; potassium 3.3; calcium 7.2; total bilirubin 3.0; albumin 1.9; ALT 145; AST 88; LDH 425; CK 519.
+Urinalysis — density 1012; blood trace; ketone +1; bilirubin +1.
+Inflammatory markers — CRP 260.4; ESR 40; procalcitonin 84.3.
+Coagulation — PT 30.2 s; aPTT 33.9 s; INR 2.4; fibrinogen 436; D-dimer 7699.
+Cultures — blood, urine and throat: no pathogenic organisms isolated.</div>
+
+  <div class="seclabel">Diagnosis</div>
+
+  <div class="pf-card" id="pf">
+    <div class="pf-head"><span class="t">Problem framing</span><span class="meta">agentic experiment · 1 iter</span></div>
+    <p class="oneliner"><span class="tip" tabindex="0">A young child from a rural area with an acute, severe febrile multisystem illness — bilateral conjunctival suffusion, calf-muscle tenderness, diffuse erythema with intraoral bleeding, and hepatosplenomegaly — accompanied by profound hypoglycemia, hyponatremia, hypoalbuminemia, and coagulopathy.<span class="pop">GusEngine's one-line <b>problem representation</b> — a single abstraction over the case that the rest of the output is scoped to, rather than the raw fact list.</span></span></p>
+    <div class="mini"><span class="tip" tabindex="0">Cognitive mode<span class="pop">Which of three response registers the output uses — name the syndrome, find its cause, or confirm a known one. Here the syndrome is clear, so the output is scoped to the discriminators that separate the causes.</span></span></div>
+    <div class="mode">Etiologic discrimination</div>
+    <div class="mini">Load-bearing facts</div>
+    <ul class="facts">
+      <li>7-year-old boy from a rural area; referred to PICU.</li>
+      <li>2 days of sudden-onset fever, headache and vomiting, then myalgia and a generalized rash.</li>
+      <li>Referring (working) diagnosis: staphylococcal toxic shock syndrome; on vancomycin.</li>
+      <li>Hypotension 82/60, tachycardia 169, GCS 11, capillary refill 3s.</li>
+      <li>Bilateral conjunctival suffusion; calf-muscle tenderness; diffuse erythema with intraoral bleeding.</li>
+      <li>Hepatomegaly 3 cm and splenomegaly 2 cm below the costal margins.</li>
+      <li>Profound hypoglycemia (38), metabolic acidosis (HCO₃ 10), hyponatremia (128), hypoalbuminemia (1.9).</li>
+      <li>Coagulopathy: PT 30.2s, INR 2.4, D-dimer 7699; CK 519; CRP 260, procalcitonin 84.</li>
+      <li>Notably normal: platelets 192,000 and creatinine 0.9.</li>
+      <li>Blood, urine and throat cultures: no growth.</li>
+    </ul>
+  </div>
+
+  <div class="sev"><span class="tip" tabindex="0" style="color:var(--warning)">Severity: critical<span class="pop">A safety read of how sick the patient is, kept separate from the differential — so acuity is never conflated with which diagnosis is most likely.</span></span></div>
+
+  <div class="seclabel">Frame adequacy — orphan check</div>
+  <div class="fa-card">
+    <div style="font-size:13px;color:var(--text-secondary);line-height:1.5"><span class="tip" tabindex="0">Orphan check<span class="pop">A check that <b>no important finding is left unexplained</b> by the differential. If a high-reliability fact were orphaned — explained by none of the candidates — it would flag a likely missing diagnosis. None here.</span></span>: orphan load <b style="color:var(--success)">none</b> — no high-reliability fact is left unexplained by the current candidates.</div>
+    <span class="pill-ok">frame adequate</span>
+  </div>
+
+  <div class="seclabel">Next step</div>
+  <div class="ns-card">
+    <p class="ns-intro"><span class="tip" tabindex="0" style="font-style:normal">The decision tree<span class="pop">The single highest-yield move, what each result would mean, and what to do then — the "what would change the probability" made explicit, plus the test held back for now and the safety floor.</span></span> — a severe, acute febrile illness with multi-organ involvement (hepatic, renal, hematologic) and the highly specific finding of conjunctival suffusion, which strongly points toward leptospirosis. This is a confirm-and-treat phase.</p>
+
+    <div class="rank">
+      <div class="rh"><b>Rank 1</b> &nbsp;<span class="disc"><span class="tip" tabindex="0">discriminates<span class="pop">The candidates this one move would help separate — the move is chosen because it cuts across several at once, not just the leader.</span></span>: <span class="e">Leptospirosis · Rickettsial diseases · Severe malaria</span></span></div>
+      <div class="mvt">Order PCR for Leptospira (whole blood) and initiate empiric treatment with IV penicillin or ceftriaxone.</div>
+      <div class="rat">PCR on whole blood is the most useful test in the first week of illness; empiric penicillin/ceftriaxone covers the treatable spirochetal and bacterial causes while it returns — in severe suspected disease, clinical suspicion drives treatment before laboratory confirmation.</div>
+      <div class="gbox">
+        <div class="gt"><span class="tip" tabindex="0" style="border-bottom:none"><span class="ck">✓ corpus-grounded</span><span class="pop">This recommendation is drawn from the literature and carries the <b>verbatim source</b> below — the justifying evidence is citable even where the initial naming isn't.</span></span> · Leptospirosis</div>
+        <div class="gm">PCR analysis of whole blood, collected in the first week of illness.</div>
+        <div class="gq">"During early disease, polymerase chain reaction (PCR) analysis of whole blood (collected in the first week of illness) … can be helpful for leptospirosis."</div>
+      </div>
+      <div class="ifgrid">
+        <div class="ifcol">
+          <div class="ifh"><span class="tip" tabindex="0" style="color:var(--success)">if positive →<span class="pop">What a positive result looks like, what it means, and the next action — so the move is actionable in both directions before you order it.</span></span></div>
+          <div class="f1">Detection of Leptospira DNA in whole blood.</div>
+          <div class="f2">Confirms the diagnosis of leptospirosis.</div>
+          <div class="f3">Continue targeted antibiotic therapy and supportive care for the multi-organ dysfunction.</div>
+        </div>
+        <div class="ifcol">
+          <div class="ifh">if negative →</div>
+          <div class="f1">PCR negative for Leptospira.</div>
+          <div class="f2">Does not rule it out (sensitivity isn't 100%), but broadens the differential.</div>
+          <div class="f3">Send paired acute/convalescent serum for MAT; re-evaluate rickettsial and malarial causes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dndy"><span class="tip" tabindex="0" style="border-bottom:none"><b>Do not do yet</b><span class="pop">Tests held back for now — the engine flags what <b>not</b> to order yet, and why, guarding against overtesting.</span></span> — Microscopic Agglutination Test (MAT): the antibody response is not yet reliable this early; send paired sera later.</div>
+
+    <div class="dndy"><b>If all moves negative</b> — re-evaluate for rickettsial disease (scrub typhus, RMSF) via serology or PCR, and confirm malaria is excluded by thick and thin blood smears.</div>
+
+    <div class="safety"><span class="tip" tabindex="0" style="color:var(--danger);border-bottom-color:var(--danger)">Safety floor<span class="pop">The minimum that must happen regardless of the diagnostic path — surfaced so acuity is never lost while the workup proceeds.</span></span> — the patient is in shock with multi-organ dysfunction; ensure aggressive hemodynamic support and active management of the hypoglycemia.</div>
+  </div>
+
+  <div class="dd-title" id="dd">
+    <h2>Defended differential</h2>
+    <span class="cap">grounded · ranked differential</span>
+  </div>
+  <div class="banner"><span class="tip" tabindex="0">Working the cause of a named syndrome<span class="pop">A <b>ranked differential, not a verdict.</b> For each candidate: what fits, what argues against, the atypical high-information findings, and the test that would settle it. Percentages are the engine's read of relative likelihood — the call is yours.</span></span></div>
+
+  <div class="card phys">
+    <div class="mini">Physiologic reading — what the findings mean</div>
+    <p class="fz"><b>Systemic hypoperfusion and microvascular failure</b> → anaerobic metabolism and a severe metabolic acidosis. <span style="color:var(--success)">✓</span></p>
+    <p class="src">HCO₃ 10 · lactate 2.4 · capillary refill 3s</p>
+    <p class="fz"><b>Active skeletal-muscle injury (myositis)</b> → leak of intracellular muscle enzymes. <span style="color:var(--success)">✓</span></p>
+    <p class="src">myalgia · calf tenderness · CK 519</p>
+    <p class="fz"><b>A consumptive coagulopathy / DIC</b> → clotting-factor depletion with clinical bleeding. <span style="color:var(--success)">✓</span></p>
+    <p class="src">intraoral bleeding · PT 30.2s · D-dimer 7699</p>
+    <p class="lb"><span class="tri">▲</span> <span class="lbl" style="font-weight:600;font-size:var(--font-xs);letter-spacing:.4px;text-transform:uppercase">load-bearing</span> <b>Normal platelets and creatinine despite a severe systemic illness</b> → an expected-but-absent pattern: severe leptospirosis usually consumes platelets and injures the kidney. <span class="by">(weighed against: Leptospirosis, Dengue hemorrhagic fever)</span></p>
+  </div>
+
+  <div class="cand lead">
+    <div class="ch"><span class="num">#1</span><span class="nm">Leptospirosis (Weil's disease)</span>
+      <span class="tip pr" tabindex="0" style="border-bottom:none">leading<span class="pop">Relative likelihood across the differential — a <b>calibrated estimate</b>, not a commitment. "What would move this" is answered by the discriminating test below.</span></span>
+      <span class="band">supported</span>
+      <span class="tip gr" tabindex="0" style="border-bottom:none">✓ grounded<span class="pop">Where a claim is drawn from the literature it carries a <b>source you can open</b>; claims not found in the corpus carry none and are marked as such — what is and isn't citable is shown explicitly.</span></span>
+    </div>
+    <div class="ln"><span class="tip tri" tabindex="0">▲ fits typically<span class="pop">The findings this diagnosis explains in the expected, typical way — the supporting evidence.</span></span> <span class="lbl">:</span> rural exposure · bilateral conjunctival suffusion · calf-muscle tenderness · hepatosplenomegaly · hepatic dysfunction · coagulopathy</div>
+    <div class="ln"><span class="tip dn" tabindex="0">▼ argues against<span class="pop">Findings present that don't fit, or features the diagnosis <b>should</b> produce but that are absent — the evidence that lowers it.</span></span> normal platelet count and creatinine (severe leptospirosis usually brings thrombocytopenia and renal injury)</div>
+    <div class="kept">kept open — the discriminating test is not yet done: Leptospira PCR (whole blood)</div>
+  </div>
+
+  <div class="cand">
+    <div class="ch"><span class="num">#2</span><span class="nm">Scrub typhus</span><span class="band">supported</span><span class="gr">✓ grounded</span></div>
+    <div class="ln"><span class="tri">▲ fits typically</span> <span class="lbl">:</span> rural exposure · fever · rash · hepatosplenomegaly · transaminitis</div>
+    <div class="ln"><span class="tip di" tabindex="0">◆ atypical (high-information)<span class="pop">Present-but-unusual — or expected-but-absent — features for this diagnosis. These are the <b>highest-information findings</b> — the ones that distinguish the correct diagnosis from a superficial match — weighted as such, not discounted.</span></span> <span class="lbl">:</span> no eschar on a full skin survey (the classic finding, absent here — lowers but does not exclude it)</div>
+    <div class="kept">kept open — the discriminating test is not yet done: scrub typhus IgM ELISA</div>
+  </div>
+
+  <div class="cand">
+    <div class="ch"><span class="num">#3</span><span class="nm">Rickettsial infection (RMSF / spotted-fever group)</span><span class="band">supported</span><span class="gr">✓ grounded</span></div>
+    <div class="ln"><span class="tri">▲ fits typically</span> <span class="lbl">:</span> rural exposure · fever · rash · hyponatremia · endothelial injury explains the coagulopathy and hypoglycemia</div>
+    <div class="kept">kept open — the discriminating test is not yet done: skin examination, rickettsial serology</div>
+  </div>
+
+  <div class="cand">
+    <div class="ch"><span class="num">#4</span><span class="nm">Severe malaria</span><span class="band">provisional</span><span class="gr">✓ grounded</span></div>
+    <div class="ln"><span class="tri">▲ fits typically</span> <span class="lbl">:</span> fever · hepatosplenomegaly · profound hypoglycemia · metabolic acidosis</div>
+    <div class="ln"><span class="di">◆ atypical (high-information)</span> <span class="lbl">:</span> prominent rash and conjunctival suffusion are unusual for malaria</div>
+    <div class="kept">kept open — the discriminating test is not yet done: thick/thin blood smear or malaria RDT</div>
+  </div>
+
+  <div class="cand">
+    <div class="ch"><span class="num">·</span><span class="nm">Toxic shock syndrome</span><span class="lbl" style="font-size:12px">— the referring diagnosis</span><span class="band" style="background:#fce8e8;color:var(--danger)">argued against</span></div>
+    <div class="ln"><span class="dn">▼ argues against</span> a normal platelet count (192,000) is incompatible with the CDC criterion (≤100,000), and a normal creatinine (0.9) with the renal-involvement criterion; no bacterial focus identified.</div>
+    <div class="kept" style="font-style:normal;color:var(--text-muted)">GusEngine tests the working diagnosis against its own published criteria rather than skipping it.</div>
+  </div>
+
+  <div class="confirm">
+    <div class="mini" style="margin-top:0"><span class="tip" tabindex="0">What confirms / changes the answer<span class="pop">The highest-yield next tests and what each would <b>rule in or out</b> — the missing information that would move the probabilities. Decision support, not a decision.</span></span></div>
+    <div class="mv">→ <b>Leptospira PCR</b> (whole blood, useful in the first week) — confirms or lowers leptospirosis</div>
+    <div class="mv" style="margin-top:5px">→ <b>Scrub typhus IgM ELISA</b> — confirms or lowers scrub typhus</div>
+    <div class="bl" style="margin-top:7px;color:var(--text-tertiary)">Empiric doxycycline plus penicillin/ceftriaxone covers the treatable zoonoses while serology returns.</div>
+  </div>
+
+  <div class="miss" id="miss"><span class="tip" tabindex="0" style="color:var(--danger)">Cannot-miss (carried)<span class="pop">Dangerous diagnoses worth <b>actively excluding regardless of where they rank</b> — surfaced separately so probability never buries safety. Orthogonal to "most likely".</span></span> : Leptospirosis (Weil's disease) · Toxic shock syndrome · Hemophagocytic lymphohistiocytosis (HLH)</div>
+
+  <footer>
+    GusEngine surfaces the reasoning and the data to decide on — it does not issue a verdict. The published case resolved as severe leptospirosis (Weil's disease). Prepared for discussion; not for clinical use.
+  </footer>
+
+</div>
+</body>
+</html>
