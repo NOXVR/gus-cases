@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GusEngine — right-sizing the workup (no Chicken Little)</title>
+<meta name="description" content="Three benign cases, in the engine's own output: it matches the workup to the acuity — leads with management, defers the low-yield test, keeps the safety net.">
+<meta property="og:title" content="GusEngine — right-sizing the workup">
+<meta property="og:description" content="On low-acuity cases the engine leads with the plan and declines the reflexive test — without ever hiding the differential or losing the one thing worth watching.">
+<style>
+  :root{
+    --bg-primary:#fff;--bg-secondary:#f6f7f9;--surface:#fff;
+    --text-primary:#111827;--text-secondary:#374151;--text-muted:#6b7280;--text-tertiary:#9ca3af;
+    --border:#d1d5db;--border-light:#e5e7eb;--accent:#2563eb;--accent-border:#bfdbfe;
+    --info:#2563eb;--info-light:#dbeafe;--success:#059669;--success-light:#d1fae5;--warning:#b45309;--warning-light:#fef3c7;--danger:#dc2626;
+    --teal:#0f766e;--radius-sm:4px;--radius-md:8px;--radius-lg:12px;
+    --font-xs:11px;--font-sm:13px;--font-md:15px;--font-lg:18px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg-secondary);color:var(--text-primary);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto;background:var(--surface);padding:24px 26px 60px}
+  a.back{display:inline-block;text-decoration:none;color:var(--accent);font-size:12px;font-weight:600;margin:0 0 14px}
+  .x-header{border-bottom:2px solid var(--accent);padding:0 0 9px;margin:0 0 18px}
+  .x-header .brand{font-size:var(--font-xs);font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-tertiary)}
+  .x-header h1{font-size:20px;font-weight:600;margin:3px 0 2px;color:var(--text-primary)}
+  .x-header .sub{font-size:var(--font-sm);color:var(--text-muted);margin:0}
+  .intro{background:var(--info-light);border:1px solid var(--accent-border);border-radius:var(--radius-lg);padding:15px 17px;margin:4px 0 10px}
+  .intro .hd{font-size:var(--font-md);font-weight:600;color:#1e40af;margin-bottom:6px}
+  .intro p{margin:0 0 9px;color:#1e3a5f;font-size:var(--font-sm);line-height:1.55}
+  .intro p:last-child{margin-bottom:0}
+  .gradient{list-style:none;margin:8px 0 0;padding:0}
+  .gradient li{padding:6px 0;border-top:1px solid #c3d9f5;font-size:var(--font-sm);color:#1e3a5f;line-height:1.5}
+  .gradient li:first-child{border-top:none}
+  .gradient b{color:#1e3a5f;font-weight:600}
+  .case{margin:30px 0 0;border-top:1px solid var(--border-light);padding-top:20px}
+  .case-tag{font-size:var(--font-xs);font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--accent)}
+  .case h2{font-size:var(--font-lg);font-weight:600;margin:3px 0 6px;color:var(--text-primary)}
+  .pres{font-size:12.5px;color:var(--text-muted);background:var(--bg-secondary);border-radius:var(--radius-md);padding:9px 12px;margin:0 0 12px;line-height:1.55}
+  .pf-card{border:1px solid var(--accent);border-radius:var(--radius-lg);padding:13px 16px;margin:0 0 10px;background:var(--surface)}
+  .pf-head{font-size:var(--font-sm);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .oneliner{font-style:italic;font-size:13.5px;line-height:1.6;color:var(--text-primary);margin:0 0 10px}
+  .mini{font-size:var(--font-xs);font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-tertiary);margin:0 0 4px}
+  .mode{font-size:var(--font-sm);font-weight:600;color:var(--info);margin-bottom:8px}
+  .sev{display:inline-block;font-size:var(--font-sm);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--success);background:var(--success-light);padding:3px 11px;border-radius:12px;margin:0 0 12px}
+  .ns-card{background:var(--bg-secondary);border-radius:var(--radius-lg);padding:14px 16px;margin:0 0 10px}
+  .ns-intro{font-style:italic;font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0 0 12px}
+  .lead{background:var(--surface);border:1px solid var(--success-light);border-left:3px solid var(--success);border-radius:0 var(--radius-md) var(--radius-md) 0;padding:11px 13px;margin:0 0 10px}
+  .lead .lh{font-size:var(--font-xs);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--success);margin-bottom:4px}
+  .lead .lt{font-size:13.5px;font-weight:600;color:var(--text-primary);line-height:1.5}
+  .dndy{background:#fffaf0;border:1px solid var(--warning-light);border-radius:var(--radius-md);padding:10px 13px;margin:0 0 10px}
+  .dndy .dh{font-size:var(--font-xs);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--warning);margin-bottom:3px}
+  .dndy .dt{font-size:12.5px;color:var(--text-secondary);line-height:1.5}
+  .dndy .dt b{color:var(--text-primary);font-weight:600}
+  .safety{font-size:12.5px;color:var(--danger);background:#fdf1f1;border:1px solid #f3d4d4;border-radius:var(--radius-md);padding:10px 13px;line-height:1.5}
+  .safety .sh{font-size:var(--font-xs);font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:3px}
+  .diff{font-size:12.5px;color:var(--text-secondary);line-height:1.6;margin:10px 0 0;padding:0 2px}
+  .diff .dlabel{font-size:var(--font-xs);font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:3px}
+  .diff b{color:var(--text-primary);font-weight:600}
+  .cm{color:var(--text-muted)}
+  footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--border-light);color:var(--text-tertiary);font-size:12px;line-height:1.6}
+  .tip{position:relative;border-bottom:1px dotted var(--text-tertiary);cursor:help;outline:none}
+  .tip>.pop{position:absolute;top:155%;left:0;width:310px;max-width:80vw;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius-md);padding:11px 13px;font-size:12.5px;
+    line-height:1.55;color:var(--text-secondary);font-style:normal;font-weight:400;z-index:30;opacity:0;
+    visibility:hidden;transition:opacity .12s;box-shadow:0 6px 22px rgba(17,24,39,.12)}
+  .tip:hover>.pop,.tip:focus>.pop,.tip:focus-within>.pop{opacity:1;visibility:visible}
+  .pop b{color:var(--text-primary);font-weight:600}
+  @media (max-width:560px){.wrap{padding:18px 14px 50px}.tip>.pop{width:230px}}
+  @media print{body,.wrap{background:#fff}.tip>.pop{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="index.html">← back</a>
+
+  <div class="x-header">
+    <div class="brand">GusEngine · right-sizing the workup</div>
+    <h1>Less when less is right — more when more is</h1>
+    <p class="sub">Three benign cases in the engine's own output — hover any <span class="tip" tabindex="0">dotted label<span class="pop">Each says, plainly, <b>what that output is</b> and <b>why it's there</b>, so the page explains itself.</span></span> for what it means.</p>
+  </div>
+
+  <div class="intro">
+    <div class="hd">Dr. Gold — avoiding Chicken Little, both directions.</div>
+    <p>You pressed on the overtesting trap — ordering the secondary, more-invasive test when the data already answers the question — and on early closure, dropping a real concern too soon. These three benign cases are the test: the engine asks <b>what would actually change management</b> and acts on the answer — declining the label-completing test when nothing turns on it, ordering the right workup when a real question remains, and carrying the cannot-miss as a floor, not an alarm.</p>
+    <p>The engine <b>matches the workup to the case</b>. When the data already characterizes a benign picture it leads with the <b>management</b> and puts the reflexive test in <b>"do not do yet"</b> with a reason; when a real question remains that a test would actually answer, it <b>investigates</b> — the right test, not every test. Either way it surfaces a <b>safety floor</b> (the finding that <em>would</em> change the plan) and never hides the differential. These three are a deliberate gradient:</p>
+    <ul class="gradient">
+      <li><b>The obvious one</b> — manage and recheck; the label-completing test is declined.</li>
+      <li><b>When the move is not a test</b> — the temptation is to image; the right answer is to not.</li>
+      <li><b>On the line, but not a zebra</b> — and here the engine does <em>not</em> pare back: the picture looks routine, but one datapoint genuinely needs answering, so it investigates and defers only the over-invasive test.</li>
+    </ul>
+  </div>
+
+  <!-- ============================ CASE 1 ============================ -->
+  <div class="case">
+    <div class="case-tag">Case 1 · the obvious one</div>
+    <h2>Metabolic risk in a well 34-year-old</h2>
+    <div class="pres">34-year-old man · overweight (BMI 27.9), waist 38″ · BP 128/84 · borderline cholesterol/LDL/triglycerides · <b>normal fasting glucose (98) &amp; HbA1c (5.5%)</b> · sedentary · 10–12 drinks/week · family history of hypertension.</div>
+
+    <div class="pf-card">
+      <div class="pf-head">Problem framing</div>
+      <p class="oneliner">A young male with a stable, asymptomatic metabolic profile — borderline hyperlipidemia, elevated waist circumference, and a sedentary lifestyle — without hyperglycemia or renal impairment.</p>
+      <span class="sev tip" tabindex="0">Severity: low<span class="pop">A safety read of how sick the patient is, computed independently of the differential. <b>This is the dial that right-sizes the response</b> — on a low-acuity picture the next step is allowed to lead with management instead of a test.</span></span>
+    </div>
+
+    <div class="ns-card">
+      <p class="ns-intro">"Low-acuity… the next steps are focused on lifestyle modification."</p>
+      <div class="lead">
+        <div class="lh"><span class="tip" tabindex="0">The move<span class="pop">The single highest-value next step. On a low-acuity, already-characterized picture this is <b>the intervention itself</b>, not a diagnostic test — with the interval to reassess built in.</span></span></div>
+        <div class="lt">Counsel on structured aerobic exercise (150 min/week) and alcohol reduction; recheck fasting lipid panel and blood pressure in 3 months.</div>
+      </div>
+      <div class="dndy">
+        <div class="dh"><span class="tip" tabindex="0">Do not do yet — the restraint<span class="pop">The test a nervous workflow would order to <b>complete a label</b>. The engine names it, defers it, and says why — the exact overtesting trap it's built to avoid.</span></span></div>
+        <div class="dt"><b>Oral Glucose Tolerance Test</b> — not required for the diagnosis, and it would not change the immediate management plan.</div>
+      </div>
+      <div class="safety">
+        <div class="sh"><span class="tip" tabindex="0" style="color:var(--danger);border-bottom-color:var(--danger)">Safety floor — the net<span class="pop">The finding that <b>would</b> change the plan, surfaced so restraint never means inattention.</span></span></div>
+        Monitor for overt hypertension or worsening dyslipidemia; if blood pressure consistently exceeds 130/80 mmHg despite lifestyle changes, initiate pharmacologic therapy.
+      </div>
+      <div class="diff">
+        <div class="dlabel"><span class="tip" tabindex="0">The differential beneath<span class="pop">Restraint is not suppression — the full ranked differential still renders below the recommendation (zebra-safe). It's a <b>co-equal metabolic neighborhood</b> where nothing separates, which is exactly why the engine doesn't commit and leads with the intervention they all share.</span></span></div>
+        Held as a co-equal neighborhood — <b>compensated insulin resistance · mixed dyslipidemia · MASLD · visceral obesity · essential hypertension</b> — none separating on a discriminating feature.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ CASE 2 ============================ -->
+  <div class="case">
+    <div class="case-tag">Case 2 · when the move is not a test</div>
+    <h2>Acute mechanical low back pain, no red flags</h2>
+    <div class="pres">38-year-old woman · 5 days of low back pain after moving furniture · worse with bending/lifting, eased by rest and ibuprofen · <b>no radiation, numbness, weakness, or red flags</b> · normal neuro exam, negative straight-leg raise.</div>
+
+    <div class="pf-card">
+      <div class="pf-head">Problem framing</div>
+      <p class="oneliner">A middle-aged woman with an acute, self-limited musculoskeletal pain syndrome — localized paraspinal tenderness following mechanical strain — without radicular symptoms, neurologic deficits, or constitutional signs.</p>
+      <span class="sev">Severity: low</span>
+    </div>
+
+    <div class="ns-card">
+      <p class="ns-intro">"Consistent with a self-limited mechanical low back injury… does not require further diagnostic testing at this time."</p>
+      <div class="lead">
+        <div class="lh">The move</div>
+        <div class="lt">Maintain activity as tolerated, avoid heavy lifting for 2 weeks, continue scheduled ibuprofen; recheck in 2–4 weeks if symptoms persist.</div>
+      </div>
+      <div class="dndy">
+        <div class="dh"><span class="tip" tabindex="0">Do not do yet — the restraint<span class="pop">Here the "standard" reflex is imaging. The engine declines it on the merits — <b>this is the case where the right move is no test at all</b>, not a different test.</span></span></div>
+        <div class="dt"><b>Lumbar spine imaging (X-ray, MRI)</b> — low-yield and not indicated in the absence of red flags or neurologic deficits, with a clear mechanical trigger.</div>
+      </div>
+      <div class="safety">
+        <div class="sh">Safety floor — the net</div>
+        Monitor for new-onset bowel or bladder dysfunction, saddle anesthesia, or progressive neurologic deficits, which would necessitate immediate evaluation for cauda equina syndrome.
+      </div>
+      <div class="diff">
+        <div class="dlabel">The differential beneath</div>
+        Converged on a tight cluster of benign mechanical etiologies — <b>myofascial pain · paraspinal strain · ligament sprain · facet dysfunction</b> — which is why no test is needed to act. <span class="cm">Cannot-miss carried but not chased: cauda equina syndrome; vertebral osteomyelitis / spinal epidural abscess.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ CASE 3 (pending live run) ============================ -->
+  <div class="case">
+    <div class="case-tag">Case 3 · on the line — where the engine does <em>not</em> pare back</div>
+    <h2>Iron-deficiency anemia in a 52-year-old man</h2>
+    <div class="pres">52-year-old man · mild fatigue, 2–3 months · microcytic anemia (Hb 11.4, MCV 76, high RDW) · <b>profound iron deficiency (ferritin 9, transferrin sat 8%)</b> · normal diet, no NSAIDs, no visible blood, no GI symptoms.</div>
+
+    <div class="pf-card">
+      <div class="pf-head">Problem framing</div>
+      <p class="oneliner">A middle-aged man with an insidious microcytic anemia and profound iron deficiency — without gastrointestinal symptoms or overt blood loss.</p>
+      <span class="sev tip" tabindex="0">Severity: low<span class="pop">Still low-acuity — he is stable, not bleeding overtly. But low-acuity does <b>not</b> mean "no workup": acuity sets the tempo, not whether to investigate.</span></span>
+    </div>
+
+    <div class="ns-card">
+      <p class="ns-intro">"The differential is broad and currently indistinguishable because the iron-deficiency anemia lacks a localized source; we are in the phase of establishing the anatomic cause of the iron loss."</p>
+      <div class="lead">
+        <div class="lh"><span class="tip" tabindex="0">The move — and here it IS a test<span class="pop">The mirror of Cases 1 &amp; 2. Iron deficiency in an adult male is not explained by diet, and the occult-source question <b>genuinely changes management</b> — a colon cancer found here changes everything. So the engine leads with the standard workup; it does <b>not</b> pare back. Calibration is "test exactly when it would change the plan," not "never test."</span></span></div>
+        <div class="lt">Bidirectional endoscopy (esophagogastroduodenoscopy and colonoscopy) — the gold-standard, least-invasive way to localize the source of occult blood loss or malabsorption.</div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-top:7px;line-height:1.5;border-top:1px solid var(--border-light);padding-top:7px;"><span class="tip" tabindex="0" style="color:var(--success)">✓ corpus-grounded<span class="pop">Drawn from the literature with the verbatim source — the justifying evidence is citable.</span></span> · "A patient with … iron deficiency anemia should undergo upper endoscopy and colonoscopy … both examinations are recommended in the majority of cases."</div>
+      </div>
+      <div class="dndy">
+        <div class="dh"><span class="tip" tabindex="0">Do not do yet — restraint, still<span class="pop">Even here the engine holds back the <b>over</b>-invasive test: bone marrow biopsy is reserved for anemia that stays unexplained after the iron-loss workup. Restraint and investigation are the same discipline — the right test, not every test.</span></span></div>
+        <div class="dt"><b>Bone marrow biopsy</b> — invasive; reserved for cases where the cause remains unexplained after a comprehensive evaluation for iron deficiency and blood loss.</div>
+      </div>
+      <div class="safety">
+        <div class="sh">Safety floor — the net</div>
+        While the patient is currently stable, the primary risk is an occult malignancy; ensure the endoscopy is scheduled promptly and monitor for any new symptoms (overt bleeding, weight loss, or abdominal pain).
+      </div>
+      <div class="diff">
+        <div class="dlabel">The differential beneath</div>
+        A broad, co-equal source differential — <b>colorectal cancer · GI angiodysplasia · autoimmune atrophic gastritis · celiac disease · H. pylori · peptic ulcer · gastric cancer</b> — none localizable without scoping, which is exactly why the engine investigates rather than treats blind. <span class="cm">Cannot-miss carried: occult gastrointestinal malignancy.</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    GusEngine surfaces the reasoning and the data to decide on — it does not issue a verdict, and it does not pad a workup. The full differential renders beneath every recommendation. Prepared for discussion; not for clinical use.
+  </footer>
+
+</div>
+</body>
+</html>
